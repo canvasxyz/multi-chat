@@ -126,7 +126,11 @@ export const ChatInstance = ({ topic, left }) => {
           padding: 10,
         }}
         onClick={() => toggleChatOpen()}
-        title={connections.map((c) => c.remoteAddr.toString()).join("\n")}
+        title={
+          app?.peerId +
+          "\n---\n" +
+          connections.map((c) => c.remoteAddr.toString()).join("\n")
+        }
       >
         Chat (
         {
