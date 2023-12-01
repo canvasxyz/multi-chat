@@ -16,6 +16,15 @@ type Message = {
 }
 
 export const Chat = () => {
+  return (
+    <>
+      <ChatInstance topic="xyz.canvas.room1" left={30} />
+      <ChatInstance topic="xyz.canvas.room2" left={330} />
+    </>
+  )
+}
+
+export const ChatInstance = ({ topic, left }) => {
   const [signer] = useState(() => new ethers.Wallet(getBurnerPrivateKey()))
   const [chatOpen, setChatOpen] = useState(true)
   const scrollboxRef = useRef<VirtuosoHandle>(null)
@@ -39,7 +48,7 @@ export const Chat = () => {
           db.set("messages", { id, message, address, timestamp })
         },
       },
-      topic: "xyz.canvas.examples",
+      topic,
     },
     signers: [new SIWESigner({ signer })],
   })
@@ -107,7 +116,7 @@ export const Chat = () => {
         borderBottom: "none",
         position: "fixed",
         bottom: 0,
-        left: 30,
+        left,
         width: 280,
       }}
     >
