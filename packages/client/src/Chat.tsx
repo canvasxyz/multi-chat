@@ -57,7 +57,6 @@ export const ChatInstance = ({ topic, left }) => {
     const scroller = scrollboxRef.current?.children[0]
     scroller.scrollTop = scroller.scrollHeight
   }, [messages?.length])
-  console.log(messages?.length)
 
   // set up app onload
   const handleConnectionOpen = useCallback(
@@ -81,7 +80,9 @@ export const ChatInstance = ({ topic, left }) => {
   useEffect(() => {
     if (!app) return
 
-    app.start()
+    // app.start()
+    localStorage.setItem("debug", "libp2p:*, canvas:*")
+
     app.libp2p?.addEventListener("connection:open", handleConnectionOpen)
     app.libp2p?.addEventListener("connection:close", handleConnectionClose)
     return () => {
