@@ -53,6 +53,11 @@ export const ChatInstance = ({ topic, left }) => {
     signers: [new SIWESigner({ signer })],
   })
   const messages = useLiveQuery<Message>(app, "messages")
+  useEffect(() => {
+    const scroller = scrollboxRef.current?.children[0]
+    scroller.scrollTop = scroller.scrollHeight
+  }, [messages?.length])
+  console.log(messages?.length)
 
   // set up app onload
   const handleConnectionOpen = useCallback(
@@ -141,9 +146,8 @@ export const ChatInstance = ({ topic, left }) => {
         peers)
       </div>
       {chatOpen && (
-        <div style={{ borderTop: "1px solid" }}>
+        <div style={{ borderTop: "1px solid" }} ref={scrollboxRef}>
           <Virtuoso
-            ref={scrollboxRef}
             style={{ padding: 10, height: 250, overflowY: "scroll" }}
             data={messages || []}
             followOutput="auto"
