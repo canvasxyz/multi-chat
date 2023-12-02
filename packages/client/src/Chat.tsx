@@ -10,7 +10,7 @@ import { ethers } from "ethers"
 
 type Message = {
   id: "string"
-  message: "string"
+  content: "string"
   address: "string"
   timestamp: "number"
 }
@@ -18,8 +18,8 @@ type Message = {
 export const Chat = () => {
   return (
     <>
-      <ChatInstance topic="xyz.canvas.room1" left={30} />
-      <ChatInstance topic="xyz.canvas.room2" left={330} />
+      <ChatInstance topic="chat-example.canvas.xyz" left={30} />
+      {/*<ChatInstance topic="room-2.canvas.xyz" left={330} />*/}
     </>
   )
 }
@@ -36,23 +36,25 @@ export const ChatInstance = ({ topic, left }) => {
   const { app } = useCanvas({
     contract: {
       models: {
-        messages: {
+        message: {
           id: "primary",
-          message: "string",
+          content: "string",
           address: "string",
           timestamp: "integer",
         },
       },
       actions: {
-        sendMessage: (db, { message }, { id, address, timestamp }) => {
-          db.set("messages", { id, message, address, timestamp })
+        createMessage: (db, { content }, { id, address, timestamp }) => {
+          db.set("message", { id, content, address, timestamp })
         },
       },
       topic,
     },
     signers: [new SIWESigner({ signer })],
   })
-  const messages = useLiveQuery<Message>(app, "messages")
+  const messages = useLiveQuery<Message>(app, "message", {
+    orderBy: { timestamp: "asc" },
+  })
   useEffect(() => {
     const scroller = scrollboxRef.current?.children[0]
     scroller.scrollTop = scroller.scrollHeight
@@ -154,7 +156,7 @@ export const ChatInstance = ({ topic, left }) => {
             followOutput="auto"
             itemContent={(index, message) => (
               <div key={message.id as string}>
-                {message.address.slice(9, 15)}: {message.message}
+                {message.address.slice(9, 15)}: {message.content}
               </div>
             )}
           />
@@ -163,10 +165,10 @@ export const ChatInstance = ({ topic, left }) => {
             onSubmit={async (event) => {
               event.preventDefault()
 
-              const message = inputRef.current?.value
-              if (!app || !message || !message.trim()) return
+              const content = inputRef.current?.value
+              if (!app || !content || !content.trim()) return
 
-              app.actions.sendMessage({ message }).then(() => {
+              app.actions.createMessage({ content }).then(() => {
                 if (inputRef.current) {
                   inputRef.current.value = ""
                 }
