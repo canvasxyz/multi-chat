@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from "react"
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso"
-import type { Connection } from "@libp2p/interface/connection"
+import { Virtuoso } from "react-virtuoso"
 
-import { defaultBootstrapList } from "@canvas-js/core"
+import {
+  defaultBootstrapList,
+  AppConnectionStatus,
+  Connections,
+} from "@canvas-js/core"
 import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
 import { SIWESigner } from "@canvas-js/chain-ethereum"
 import { getBurnerPrivateKey } from "@latticexyz/common"
@@ -18,20 +21,26 @@ type Message = {
 export const Chat = () => {
   return (
     <>
-      <ChatInstance topic="chat-example.canvas.xyz" left={30} />
-      {/*<ChatInstance topic="room-2.canvas.xyz" left={330} />*/}
+      <ChatInstance topic="room-1.canvas.xyz" left={30} />
+      <ChatInstance topic="room-2.canvas.xyz" left={330} />
     </>
   )
 }
 
-export const ChatInstance = ({ topic, left }) => {
+export const ChatInstance = ({
+  topic,
+  left,
+}: {
+  topic: string
+  left: number
+}) => {
+  const [status, setStatus] = useState<AppConnectionStatus>()
+  const [connections, setConnections] = useState<Connections>({})
+
   const [signer] = useState(() => new ethers.Wallet(getBurnerPrivateKey()))
   const [chatOpen, setChatOpen] = useState(true)
-  const scrollboxRef = useRef<VirtuosoHandle>(null)
+  const scrollboxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const [connections, setConnections] = useState<Connection[]>([])
-  const connectionsRef = useRef<Connection[]>(connections)
 
   const { app } = useCanvas({
     contract: {
@@ -52,7 +61,11 @@ export const ChatInstance = ({ topic, left }) => {
     },
     signers: [new SIWESigner({ signer })],
     indexHistory: false,
+    discoveryTopic: "canvas-discovery",
     bootstrapList: [
+      "/dns4/canvas-chat-discovery-p0.fly.dev/tcp/443/wss/p2p/12D3KooWG1zzEepzv5ib5Rz16Z4PXVfNRffXBGwf7wM8xoNAbJW7",
+      "/dns4/canvas-chat-discovery-p1.fly.dev/tcp/443/wss/p2p/12D3KooWNfH4Z4ayppVFyTKv8BBYLLvkR1nfWkjcSTqYdS4gTueq",
+      "/dns4/canvas-chat-discovery-p2.fly.dev/tcp/443/wss/p2p/12D3KooWRBdFp5T1fgjWdPSCf9cDqcCASMBgcLqjzzBvptjAfAxN",
       "/dns4/canvas-chat-3.fly.dev/tcp/443/wss/p2p/12D3KooWCQQz7uozb287GZCRGv7DrrZTVDuUfh2bNCd3rpUHgpes",
       ...defaultBootstrapList,
     ],
@@ -65,44 +78,30 @@ export const ChatInstance = ({ topic, left }) => {
     scroller.scrollTop = scroller.scrollHeight
   }, [messages?.length])
 
-  // set up app onload
-  const handleConnectionOpen = useCallback(
-    ({ detail: connection }: CustomEvent<Connection>) => {
-      const connections = [...connectionsRef.current, connection]
-      setConnections(connections)
-      connectionsRef.current = connections
-    },
-    [],
-  )
-  const handleConnectionClose = useCallback(
-    ({ detail: connection }: CustomEvent<Connection>) => {
-      const connections = connectionsRef.current.filter(
-        ({ id }) => id !== connection.id,
-      )
-      setConnections(connections)
-      connectionsRef.current = connections
-    },
-    [],
-  )
   useEffect(() => {
     if (!app) return
-
-    // app.start()
+    window.app = app
     localStorage.setItem("debug", "libp2p:*, canvas:*")
 
-    app.libp2p?.addEventListener("connection:open", handleConnectionOpen)
-    app.libp2p?.addEventListener("connection:close", handleConnectionClose)
-    return () => {
-      app.libp2p?.removeEventListener("connection:open", handleConnectionOpen)
-      app.libp2p?.removeEventListener("connection:close", handleConnectionClose)
-    }
+    app.addEventListener(
+      "connections:updated",
+      ({
+        detail: { status, connections },
+      }: {
+        detail: { status: AppConnectionStatus; connections }
+      }) => {
+        setStatus(status)
+        setConnections(connections)
+      },
+    )
   }, [app])
 
   const toggleChatOpen = () => {
     setChatOpen((open) => !open)
     window.requestAnimationFrame(() => {
       setTimeout(() => {
-        if (scrollboxRef.current) scrollboxRef.current.scrollToIndex(9999)
+        if (scrollboxRef.current)
+          scrollboxRef.current.scrollTop = scrollboxRef.current.scrollHeight
       }, 10)
     })
   }
@@ -142,16 +141,19 @@ export const ChatInstance = ({ topic, left }) => {
         title={
           app?.peerId +
           "\n---\n" +
-          connections.map((c) => c.remoteAddr.toString()).join("\n")
+          Object.entries(connections)
+            .map(
+              ([peer, { status, connections }]) =>
+                `${
+                  connections.length > 0
+                    ? connections[0].remoteAddr.toString()
+                    : peer
+                }: ${status}`,
+            )
+            .join("\n")
         }
       >
-        Chat (
-        {
-          connections.filter(
-            (c) => defaultBootstrapList.indexOf(c.remoteAddr.toString()) === -1,
-          ).length
-        }{" "}
-        peers)
+        Chat ({status})
       </div>
       {chatOpen && (
         <div style={{ borderTop: "1px solid" }} ref={scrollboxRef}>
