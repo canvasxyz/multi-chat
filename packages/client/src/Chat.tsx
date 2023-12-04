@@ -51,11 +51,11 @@ export const ChatInstance = ({ topic, left }) => {
       topic,
     },
     signers: [new SIWESigner({ signer })],
+    indexHistory: false,
     bootstrapList: [
       "/dns4/canvas-chat-3.fly.dev/tcp/443/wss/p2p/12D3KooWCQQz7uozb287GZCRGv7DrrZTVDuUfh2bNCd3rpUHgpes",
       ...defaultBootstrapList,
     ],
-    enableWebRTC: true,
   })
   const messages = useLiveQuery<Message>(app, "message", {
     orderBy: { timestamp: "asc" },
