@@ -19,10 +19,27 @@ type Message = {
 }
 
 export const Chat = () => {
+  const [rooms, setRooms] = useState(["room-1.xyz"])
+  const [maxRoom, setMaxRoom] = useState(1)
+
   return (
     <>
-      <ChatInstance topic="room-1.canvas.xyz" left={30} />
-      <ChatInstance topic="room-2.canvas.xyz" left={330} />
+      <button
+        style={{
+          position: "fixed",
+          top: 20,
+          right: 20,
+        }}
+        onClick={() => {
+          setRooms([...rooms, `room-${maxRoom + 1}.xyz`])
+          setMaxRoom(maxRoom + 1)
+        }}
+      >
+        Add a room
+      </button>
+      {rooms.map((room, index) => (
+        <ChatInstance key={room} topic={room} left={30 + index * 300} />
+      ))}
     </>
   )
 }
@@ -80,7 +97,6 @@ export const ChatInstance = ({
 
   useEffect(() => {
     if (!app) return
-    window.app = app
     localStorage.setItem("debug", "libp2p:*, canvas:*")
 
     app.addEventListener(
@@ -153,7 +169,7 @@ export const ChatInstance = ({
             .join("\n")
         }
       >
-        Chat ({status})
+        {topic} ({status})
       </div>
       {chatOpen && (
         <div style={{ borderTop: "1px solid" }} ref={scrollboxRef}>
