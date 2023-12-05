@@ -17,7 +17,7 @@ serve
 ### Deploying to Vercel
 
 ```
-vercel --build
+vercel build
 vercel deploy --prebuilt
 ```
 
