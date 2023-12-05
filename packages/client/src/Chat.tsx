@@ -97,7 +97,8 @@ export const ChatInstance = ({
 
   useEffect(() => {
     if (!app) return
-    localStorage.setItem("debug", "libp2p:*, canvas:*")
+    // localStorage.setItem("debug", "libp2p:*, canvas:*")
+    window.app = app
 
     app.addEventListener(
       "connections:updated",
@@ -203,6 +204,7 @@ export const ChatInstance = ({
               ref={inputRef}
               type="text"
               placeholder="Send a message"
+              disabled={status !== "connected"}
               onKeyPress={(e) => {
                 e.stopPropagation()
               }}
