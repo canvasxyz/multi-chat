@@ -56,7 +56,7 @@ export const ChatInstance = ({
   topic: string
   left: number
 }) => {
-  const [status, setStatus] = useState<AppConnectionStatus>()
+  const [status, setStatus] = useState<AppConnectionStatus>("disconnected")
   const [connections, setConnections] = useState<Connections>({})
 
   const [signer] = useState(() => new ethers.Wallet(getBurnerPrivateKey()))
