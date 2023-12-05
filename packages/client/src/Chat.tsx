@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect, useCallback } from "react"
-import { Virtuoso } from "react-virtuoso"
 
 import {
   defaultBootstrapList,
@@ -96,7 +95,7 @@ export const ChatInstance = ({
     orderBy: { timestamp: "asc" },
   })
   useEffect(() => {
-    const scroller = scrollboxRef.current?.children[0]
+    const scroller = scrollboxRef.current
     scroller.scrollTop = scroller.scrollHeight
   }, [messages?.length])
 
@@ -178,17 +177,22 @@ export const ChatInstance = ({
         {topic} ({status})
       </div>
       {chatOpen && (
-        <div style={{ borderTop: "1px solid" }} ref={scrollboxRef}>
-          <Virtuoso
-            style={{ padding: 10, height: 250, overflowY: "scroll" }}
-            data={messages || []}
-            followOutput="auto"
-            itemContent={(index, message) => (
+        <div>
+          <div
+            style={{
+              borderTop: "1px solid",
+              padding: 10,
+              height: 250,
+              overflowY: "scroll",
+            }}
+            ref={scrollboxRef}
+          >
+            {(messages || []).map((message, index) => (
               <div key={message.id as string}>
                 {message.address.slice(9, 15)}: {message.content}
               </div>
-            )}
-          />
+            ))}
+          </div>
           <form
             style={{ padding: 10 }}
             onSubmit={async (event) => {
