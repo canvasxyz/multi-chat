@@ -19,24 +19,28 @@ type Message = {
 }
 
 export const Chat = () => {
-  const [rooms, setRooms] = useState(["room-1.xyz"])
-  const [maxRoom, setMaxRoom] = useState(1)
+  const [rooms, setRooms] = useState([])
 
   return (
     <>
-      <button
-        style={{
-          position: "fixed",
-          top: 20,
-          right: 20,
-        }}
-        onClick={() => {
-          setRooms([...rooms, `room-${maxRoom + 1}.xyz`])
-          setMaxRoom(maxRoom + 1)
-        }}
-      >
-        Add a room
-      </button>
+      {Array.apply(null, Array(20)).map((unused, index) => {
+        return (
+          <button
+            style={{
+              position: "fixed",
+              top: 20 + index * 35,
+              right: 20,
+            }}
+            onClick={() => {
+              const room = `room-${index + 1}.xyz`
+              if (rooms.indexOf(room) !== -1) return
+              setRooms([...rooms, room])
+            }}
+          >
+            Add room {index + 1}
+          </button>
+        )
+      })}
       {rooms.map((room, index) => (
         <ChatInstance key={room} topic={room} left={30 + index * 300} />
       ))}
@@ -80,6 +84,7 @@ export const ChatInstance = ({
     indexHistory: false,
     discoveryTopic: "canvas-discovery",
     bootstrapList: [
+      "/dns4/peer.canvasjs.org/tcp/443/wss/p2p/12D3KooWFYvDDRpXtheKXgQyPf7sfK2DxS1vkripKQUS2aQz5529",
       "/dns4/canvas-chat-discovery-p0.fly.dev/tcp/443/wss/p2p/12D3KooWG1zzEepzv5ib5Rz16Z4PXVfNRffXBGwf7wM8xoNAbJW7",
       "/dns4/canvas-chat-discovery-p1.fly.dev/tcp/443/wss/p2p/12D3KooWNfH4Z4ayppVFyTKv8BBYLLvkR1nfWkjcSTqYdS4gTueq",
       "/dns4/canvas-chat-discovery-p2.fly.dev/tcp/443/wss/p2p/12D3KooWRBdFp5T1fgjWdPSCf9cDqcCASMBgcLqjzzBvptjAfAxN",
@@ -190,7 +195,8 @@ export const ChatInstance = ({
               event.preventDefault()
 
               const content = inputRef.current?.value
-              if (!app || !content || !content.trim()) return
+              if (!app || !content || !content.trim() || status !== "connected")
+                return
 
               app.actions.createMessage({ content }).then(() => {
                 if (inputRef.current) {
@@ -204,7 +210,6 @@ export const ChatInstance = ({
               ref={inputRef}
               type="text"
               placeholder="Send a message"
-              disabled={status !== "connected"}
               onKeyPress={(e) => {
                 e.stopPropagation()
               }}
