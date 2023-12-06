@@ -19,9 +19,19 @@ type Message = {
 
 export const Chat = () => {
   const [rooms, setRooms] = useState([])
+  const [prefix, setPrefix] = useState("room")
 
   return (
     <>
+      <input
+        type="text"
+        placeholder="prefix"
+        value={prefix}
+        onChange={(e) => {
+          setPrefix(e.target.value)
+        }}
+        style={{ position: "fixed", top: 20, right: 130 }}
+      />
       {Array.apply(null, Array(20)).map((unused, index) => {
         return (
           <button
@@ -32,11 +42,10 @@ export const Chat = () => {
               right: 20,
             }}
             onClick={() => {
-              const room = `room-${index + 1}.xyz`
+              const room = `${prefix}-${index + 1}.xyz`
               if (rooms.indexOf(room) !== -1) return
               setRooms([...rooms, room])
             }}
-            disabled={rooms.length > 0}
           >
             Add room {index + 1}
           </button>
@@ -88,6 +97,7 @@ export const ChatInstance = ({
       "/dns4/canvas-chat-discovery-p0.fly.dev/tcp/443/wss/p2p/12D3KooWG1zzEepzv5ib5Rz16Z4PXVfNRffXBGwf7wM8xoNAbJW7",
       "/dns4/canvas-chat-discovery-p1.fly.dev/tcp/443/wss/p2p/12D3KooWNfH4Z4ayppVFyTKv8BBYLLvkR1nfWkjcSTqYdS4gTueq",
       "/dns4/canvas-chat-discovery-p2.fly.dev/tcp/443/wss/p2p/12D3KooWRBdFp5T1fgjWdPSCf9cDqcCASMBgcLqjzzBvptjAfAxN",
+      "/dns4/peer.canvasjs.org/tcp/443/wss/p2p/12D3KooWFYvDDRpXtheKXgQyPf7sfK2DxS1vkripKQUS2aQz5529",
     ],
   })
   const messages = useLiveQuery<Message>(app, "message", {
