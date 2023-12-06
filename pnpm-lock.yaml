@@ -36,14 +36,14 @@ importers:
   packages/client:
     dependencies:
       '@canvas-js/chain-ethereum':
-        specifier: ^0.8.10
-        version: 0.8.10
+        specifier: ^0.8.12
+        version: 0.8.12
       '@canvas-js/core':
-        specifier: ^0.8.10
-        version: 0.8.10(react@18.2.0)
+        specifier: ^0.8.12
+        version: 0.8.12(react@18.2.0)
       '@canvas-js/hooks':
-        specifier: ^0.8.10
-        version: 0.8.10
+        specifier: ^0.8.12
+        version: 0.8.12
       '@latticexyz/common':
         specifier: 2.0.0-next.14
         version: 2.0.0-next.14(typescript@5.1.6)(zod@3.22.4)
@@ -414,11 +414,11 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@canvas-js/chain-ethereum@0.8.10:
-    resolution: {integrity: sha512-JQyIS0TO/PicvZYzELBIqBvnNFpA44ZqMS0l62VxIR6c/MGoVMjBT3xO0ap7hmlTxMFzJRT9xy1QGN4o05jV1g==}
+  /@canvas-js/chain-ethereum@0.8.12:
+    resolution: {integrity: sha512-r6f/ElISgGK4Isiw91Edl4LphFFkIeYaweh9Ua/q2AK3Wlnu17C4xXvNB48kWfvEm0e/k77uwhb6K/YcIoyYbw==}
     dependencies:
-      '@canvas-js/interfaces': 0.8.10
-      '@canvas-js/signed-cid': 0.8.10
+      '@canvas-js/interfaces': 0.8.12
+      '@canvas-js/signed-cid': 0.8.12
       '@ipld/dag-json': 10.1.5
       ethers: 6.9.0
       siwe: 2.1.4(ethers@6.9.0)
@@ -427,17 +427,17 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@canvas-js/core@0.8.10(react@18.2.0):
-    resolution: {integrity: sha512-Yp2F8LTA7XLxCrkriWChocTZer2DvqdVlqg8li7cNvvh8LF6MpuVtuyCerU1cAmCGYK7/qrR5i9se6jhMLxqUg==}
+  /@canvas-js/core@0.8.12(react@18.2.0):
+    resolution: {integrity: sha512-n2EAnM9yDmjMyQ213D3aTKi8iVMbQB90/jO8x8z31i/+1SQgHfgc8VfualwoJtCZvzcN0Fk02zdGdU74hrpC2A==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@canvas-js/chain-ethereum': 0.8.10
-      '@canvas-js/discovery': 0.8.10(@chainsafe/libp2p-gossipsub@10.1.1)
-      '@canvas-js/gossiplog': 0.8.10(@chainsafe/libp2p-gossipsub@10.1.1)
-      '@canvas-js/interfaces': 0.8.10
-      '@canvas-js/modeldb': 0.8.10(react@18.2.0)
-      '@canvas-js/signed-cid': 0.8.10
-      '@canvas-js/vm': 0.8.10
+      '@canvas-js/chain-ethereum': 0.8.12
+      '@canvas-js/discovery': 0.8.12(@chainsafe/libp2p-gossipsub@10.1.1)
+      '@canvas-js/gossiplog': 0.8.12(@chainsafe/libp2p-gossipsub@10.1.1)
+      '@canvas-js/interfaces': 0.8.12
+      '@canvas-js/modeldb': 0.8.12(react@18.2.0)
+      '@canvas-js/signed-cid': 0.8.12
+      '@canvas-js/vm': 0.8.12
       '@chainsafe/libp2p-gossipsub': 10.1.1
       '@chainsafe/libp2p-noise': 13.0.5
       '@ipld/dag-cbor': 9.0.6
@@ -480,8 +480,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@canvas-js/discovery@0.8.10(@chainsafe/libp2p-gossipsub@10.1.1):
-    resolution: {integrity: sha512-oTE8Nib7ytAHICyqok9x79rCn4jpkBpVNEMfz0G09BU0Ie1UjAtkbos3CHY9MlWRy5ruZ+PB2zxR+P/8+WkiRQ==}
+  /@canvas-js/discovery@0.8.12(@chainsafe/libp2p-gossipsub@10.1.1):
+    resolution: {integrity: sha512-5JEGW4Zhjwk82t35ntLtybWEPeWXSS1bjB14M20mlaEAzadibF/ZEA9aqA6pAdIaH6hvc2Ge/7wHg4xuF2/HtQ==}
     peerDependencies:
       '@chainsafe/libp2p-gossipsub': ^10.1.1
     dependencies:
@@ -498,18 +498,18 @@ packages:
       - supports-color
     dev: false
 
-  /@canvas-js/gossiplog@0.8.10(@chainsafe/libp2p-gossipsub@10.1.1):
-    resolution: {integrity: sha512-bxirGBeTmJAuZb/TbCG/eGMyjZgHG0MeNQblHCOnsZpDbYvR6aFnNHFLHTPPfVhhU4oG5LwEyr1/ioNBvllsQQ==}
+  /@canvas-js/gossiplog@0.8.12(@chainsafe/libp2p-gossipsub@10.1.1):
+    resolution: {integrity: sha512-B6pZ6DLwWa294Vf79YztqJX+KxSTXE7Pz7YDcIu/G9Y2gKdJ/+pMXoKfzJDL2pYmy4cDqhrki140o19M99QxTQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@chainsafe/libp2p-gossipsub': ^10.1.0
     dependencies:
-      '@canvas-js/interfaces': 0.8.10
+      '@canvas-js/interfaces': 0.8.12
       '@canvas-js/okra': 0.2.0
       '@canvas-js/okra-idb': 0.2.2(idb@7.1.1)
       '@canvas-js/okra-memory': 0.2.1
       '@canvas-js/okra-node': 0.5.6
-      '@canvas-js/signed-cid': 0.8.10
+      '@canvas-js/signed-cid': 0.8.12
       '@chainsafe/libp2p-gossipsub': 10.1.1
       '@ipld/dag-cbor': 9.0.6
       '@ipld/schema': 4.2.5
@@ -535,11 +535,11 @@ packages:
       - supports-color
     dev: false
 
-  /@canvas-js/hooks@0.8.10:
-    resolution: {integrity: sha512-OIxbz62NRzYw5n+hTyC10wGjH1uLhyCo6B+6wxUUTQJkUUh2plok5m9U85sRsOLBFrQD27t4ONXvmLdEG3PlxQ==}
+  /@canvas-js/hooks@0.8.12:
+    resolution: {integrity: sha512-uowGXNo/zw/BQl/iKDwnLQW3Miew7RfmNOtAjR3cev0SICg0WhxHheyRN7D4QUjeNtgCtNl16kB5Dh6qFAahaA==}
     dependencies:
-      '@canvas-js/core': 0.8.10(react@18.2.0)
-      '@canvas-js/modeldb': 0.8.10(react@18.2.0)
+      '@canvas-js/core': 0.8.12(react@18.2.0)
+      '@canvas-js/modeldb': 0.8.12(react@18.2.0)
       react: 18.2.0
     transitivePeerDependencies:
       - bufferutil
@@ -547,14 +547,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@canvas-js/interfaces@0.8.10:
-    resolution: {integrity: sha512-OpVxPSvBOwiYb5uJUTWnuDltg3HaMrfJaXReoQrSDKjjFIkTReHtE/KAAemD1j2LP4CO2KOtaBSd73BdeFRuAA==}
+  /@canvas-js/interfaces@0.8.12:
+    resolution: {integrity: sha512-YrnIVNNiuBGxqXotWvw1kaCZZx5dCnCnPukVY2Ms4N63BSTgmpnkMLJIJuxpqEXsayKLX/otlsT9RphRKlLjuw==}
     dependencies:
       multiformats: 12.1.3
     dev: false
 
-  /@canvas-js/modeldb@0.8.10(react@18.2.0):
-    resolution: {integrity: sha512-3p1ULsFw3UPpI1Q1mllCnM2y8prNEGqkLPfcCTLOnqAN7bwZu1M3zzobqvtAftj6nA1vyjXU57/HLdHK6xsVzg==}
+  /@canvas-js/modeldb@0.8.12(react@18.2.0):
+    resolution: {integrity: sha512-1deFzp9QxJbXT1Sh58AFdJR1KNrzUQYTXeGgou2r9o+/XxQJ4rrTHjxzhZAgdU7IinOWne1f9aYSp0ZtNQzy5Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.2.0
@@ -620,11 +620,11 @@ packages:
       - supports-color
     dev: false
 
-  /@canvas-js/signed-cid@0.8.10:
-    resolution: {integrity: sha512-rz1eFNLfXd3YGhFxfpxGKn4gYCQavxakts5NqKBnzsOqOwAmsJEcowhkUVtG2hP1QHHFLXSazQbyOv9mh0tnWQ==}
+  /@canvas-js/signed-cid@0.8.12:
+    resolution: {integrity: sha512-T70Bwt8Wz2f8Dt17SsNLOeKGk6i6lTx5bvgGb/EsFRvNol5/apCWso9rRhUG6o62RfJnb0fEfQKm2fV/56jbSA==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@canvas-js/interfaces': 0.8.10
+      '@canvas-js/interfaces': 0.8.12
       '@ipld/dag-cbor': 9.0.6
       '@ipld/dag-json': 10.1.5
       '@noble/curves': 1.2.0
@@ -632,8 +632,8 @@ packages:
       multiformats: 12.1.3
     dev: false
 
-  /@canvas-js/vm@0.8.10:
-    resolution: {integrity: sha512-wjVA6jeNhOUgHbLlkBmRL2z4ekg6hxN6lI46cCdhEghXthiLKn07DdjIFkJ3NAID9XrYvhb6OdAS7tmEgjc3aA==}
+  /@canvas-js/vm@0.8.12:
+    resolution: {integrity: sha512-CKwNrm0zVdXXLsskkfh+MCvfM+IMLJBII9ZREwXO8ZIsjx+qbcM36JJQGBsWN6CTw5eOEXbda/HzTpbRM6hGLw==}
     engines: {node: '>=18.0.0'}
     dependencies:
       '@libp2p/logger': 3.1.0
