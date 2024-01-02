@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
 
-import { AppConnectionStatus, Connections } from "@canvas-js/core"
+import { AppConnectionStatus, CanvasEvents, Connections } from "@canvas-js/core"
 import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
 import { SIWESigner } from "@canvas-js/chain-ethereum"
 import { getBurnerPrivateKey } from "@latticexyz/common"
@@ -20,6 +20,7 @@ export const ChatInstance = ({
 
   const [signer] = useState(() => new ethers.Wallet(getBurnerPrivateKey()))
   const [chatOpen, setChatOpen] = useState(true)
+  const [peersByTopic, setPeersByTopic] = useState<Record<string, string[]>>({})
   const scrollboxRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -50,6 +51,7 @@ export const ChatInstance = ({
       "/dns4/peer.canvasjs.org/tcp/443/wss/p2p/12D3KooWFYvDDRpXtheKXgQyPf7sfK2DxS1vkripKQUS2aQz5529",
     ],
   })
+
   const messages = useLiveQuery<Message>(app, "message", {
     orderBy: { timestamp: "asc" },
   })
@@ -59,24 +61,44 @@ export const ChatInstance = ({
     scroller.scrollTop = scroller.scrollHeight
   }, [messages?.length])
 
+  // who am i connected to?
   useEffect(() => {
-    if (!app) return
-    // localStorage.setItem("debug", "libp2p:*, canvas:*")
-    window.app = app
-
-    app.addEventListener(
-      "connections:updated",
-      ({
-        detail: { status, connections },
-      }: {
-        detail: { status: AppConnectionStatus; connections: Connections }
-      }) => {
-        setStatus(status)
-        setConnections(connections)
-      },
-    )
+    const handleConnectionsUpdated = ({
+      detail: { status, connections },
+    }: CanvasEvents["connections:updated"]) => {
+      setStatus(status)
+      setConnections(connections)
+    }
+    app?.addEventListener("connections:updated", handleConnectionsUpdated)
+    return () => {
+      app?.removeEventListener("connections:updated", handleConnectionsUpdated)
+    }
   }, [app])
 
+  // who's on the topic?
+  useEffect(() => {
+    const handlePresenceChange = ({
+      detail: { peers },
+    }: CanvasEvents["presence:join"]) => {
+      const results: Record<string, string[]> = {}
+      Object.entries(peers).forEach(([peerId, peerInfo]) => {
+        if (peerInfo.env !== "browser") return
+        peerInfo.topics.map((topic) => {
+          results[topic] = results[topic] || []
+          results[topic].push(peerId)
+        })
+      })
+      setPeersByTopic(results)
+    }
+    app?.addEventListener("presence:join", handlePresenceChange)
+    app?.addEventListener("presence:leave", handlePresenceChange)
+    return () => {
+      app?.removeEventListener("presence:join", handlePresenceChange)
+      app?.removeEventListener("presence:leave", handlePresenceChange)
+    }
+  }, [app])
+
+  // bind global hotkey for opening/closing chat
   const toggleChatOpen = () => {
     setChatOpen((open) => !open)
     window.requestAnimationFrame(() => {
@@ -86,8 +108,6 @@ export const ChatInstance = ({
       }, 10)
     })
   }
-
-  // bind global hotkey
   useEffect(() => {
     const keyup = (e: KeyboardEvent) => {
       if (
@@ -117,6 +137,7 @@ export const ChatInstance = ({
         style={{
           width: "100%",
           padding: 10,
+          paddingBottom: 6,
         }}
         onClick={() => toggleChatOpen()}
         title={
@@ -144,6 +165,14 @@ export const ChatInstance = ({
             </div>
           )
         })}
+      </div>
+      <div
+        style={{
+          padding: 10,
+          paddingTop: 0,
+        }}
+      >
+        {peersByTopic[`canvas/${topic}`]?.length || 0} other browsers
       </div>
       {chatOpen && (
         <div>
