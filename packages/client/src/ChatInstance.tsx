@@ -61,7 +61,7 @@ export const ChatInstance = ({
     scroller.scrollTop = scroller.scrollHeight
   }, [messages?.length])
 
-  // who am i connected to?
+  // who am i directly connected to?
   useEffect(() => {
     const handleConnectionsUpdated = ({
       detail: { status, connections },
@@ -75,17 +75,17 @@ export const ChatInstance = ({
     }
   }, [app])
 
-  // who's on the topic?
+  // who's online right now?
   useEffect(() => {
     const handlePresenceChange = ({
       detail: { peers },
     }: CanvasEvents["presence:join"]) => {
       const results: Record<string, string[]> = {}
-      Object.entries(peers).forEach(([peerId, peerInfo]) => {
+      Object.values(peers).forEach((peerInfo) => {
         if (peerInfo.env !== "browser") return
         peerInfo.topics.map((topic) => {
           results[topic] = results[topic] || []
-          results[topic].push(peerId)
+          results[topic].push(peerInfo.peerId.toString())
         })
       })
       setPeersByTopic(results)
