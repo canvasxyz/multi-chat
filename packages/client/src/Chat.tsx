@@ -1,11 +1,6 @@
-import React, { useRef, useState, useEffect } from "react"
+import { useState } from "react"
+import { WalletClient } from "viem"
 
-import { type CanvasEvents, AppConnectionStatus, Connections } from "@canvas-js/core"
-import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
-import { SIWESigner } from "@canvas-js/chain-ethereum"
-import { getBurnerPrivateKey } from "@latticexyz/common"
-import { ethers } from "ethers"
-import { groupBy } from "lodash"
 import { ChatInstance } from "./ChatInstance"
 
 export type Message = {
@@ -15,7 +10,7 @@ export type Message = {
   timestamp: "number"
 }
 
-export const Chat = () => {
+export const Chat = ({ walletClient }: { walletClient: WalletClient }) => {
   const [rooms, setRooms] = useState<string[]>([])
   const [prefix, setPrefix] = useState("room")
 
@@ -50,7 +45,12 @@ export const Chat = () => {
         )
       })}
       {rooms.map((room, index) => (
-        <ChatInstance key={room} topic={room} left={30 + index * 300} />
+        <ChatInstance
+          key={room}
+          topic={room}
+          left={30 + index * 300}
+          walletClient={walletClient}
+        />
       ))}
     </>
   )

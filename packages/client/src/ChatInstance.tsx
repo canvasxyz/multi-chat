@@ -1,24 +1,24 @@
 import React, { useRef, useState, useEffect } from "react"
+import { WalletClient, createWalletClient } from "viem"
 
 import { AppConnectionStatus, CanvasEvents, Connections } from "@canvas-js/core"
 import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
-import { SIWESigner } from "@canvas-js/chain-ethereum"
-import { getBurnerPrivateKey } from "@latticexyz/common"
-import { ethers } from "ethers"
+import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
 
 import { Message } from "./Chat"
 
 export const ChatInstance = ({
   topic,
   left,
+  walletClient,
 }: {
   topic: string
   left: number
+  walletClient: WalletClient
 }) => {
   const [status, setStatus] = useState<AppConnectionStatus>("disconnected")
   const [connections, setConnections] = useState<Connections>({})
 
-  const [signer] = useState(() => new ethers.Wallet(getBurnerPrivateKey()))
   const [chatOpen, setChatOpen] = useState(true)
   const [peersByTopic, setPeersByTopic] = useState<Record<string, string[]>>({})
   const scrollboxRef = useRef<HTMLDivElement>(null)
@@ -41,14 +41,13 @@ export const ChatInstance = ({
       },
       topic,
     },
-    signers: [new SIWESigner({ signer })],
+    signers: [new SIWESignerViem({ signer: walletClient })],
     indexHistory: false,
     discoveryTopic: "canvas-discovery",
     bootstrapList: [
       "/dns4/canvas-chat-discovery-p0.fly.dev/tcp/443/wss/p2p/12D3KooWG1zzEepzv5ib5Rz16Z4PXVfNRffXBGwf7wM8xoNAbJW7",
       "/dns4/canvas-chat-discovery-p1.fly.dev/tcp/443/wss/p2p/12D3KooWNfH4Z4ayppVFyTKv8BBYLLvkR1nfWkjcSTqYdS4gTueq",
       "/dns4/canvas-chat-discovery-p2.fly.dev/tcp/443/wss/p2p/12D3KooWRBdFp5T1fgjWdPSCf9cDqcCASMBgcLqjzzBvptjAfAxN",
-      "/dns4/peer.canvasjs.org/tcp/443/wss/p2p/12D3KooWFYvDDRpXtheKXgQyPf7sfK2DxS1vkripKQUS2aQz5529",
     ],
   })
 

@@ -5,7 +5,7 @@ const styleUnset = { all: "unset" } as const
 
 export const App = () => {
 	const {
-		network: { tables, useStore },
+		network: { tables, useStore, walletClient },
 		systemCalls: { addTask, toggleTask, deleteTask },
 	} = useMUD()
 
@@ -102,7 +102,7 @@ export const App = () => {
 				</tfoot>
 			</table>
 			<br />
-			<Chat />
+			<Chat walletClient={walletClient} />
 		</>
 	)
 }
