@@ -126,6 +126,7 @@ export const ChatInstance = ({
       style={{
         border: "1px solid",
         borderBottom: "none",
+        background: "#fff",
         position: "fixed",
         bottom: 0,
         left,
