@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react"
 import { useCanvas } from "@canvas-js/hooks"
 import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
-import { getBurnerPrivateKey } from "@latticexyz/common"
 import { PrivateKeyAccount } from "viem"
-import { privateKeyToAccount } from "viem/accounts"
 
 import { ChatInstance } from "./ChatInstance"
 import { CanvasEvents } from "@canvas-js/core"
@@ -14,6 +12,8 @@ export type Message = {
 	address: "string"
 	timestamp: "number"
 }
+
+type PeerId = any // TODO
 
 export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 	const [rooms, setRooms] = useState<string[]>([])

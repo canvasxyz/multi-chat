@@ -66,7 +66,7 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 
 	// who's online right now?
 	useEffect(() => {
-		const handlePresenceChange = ({ detail: { peers } }: CanvasEvents["presence:join"]) => {
+		const handlePresenceChange = ({ detail: { peers } }: CanvasEvents["presence:join"] | CanvasEvents["presence:leave"]) => {
 			const results: Record<string, string[]> = {}
 			Object.values(peers).forEach((peerInfo) => {
 				if (peerInfo.env !== "browser") return

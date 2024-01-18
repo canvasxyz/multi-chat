@@ -1,5 +1,7 @@
 import { useMUD } from "./MUDContext"
 import { Chat } from "./Chat"
+import { getBurnerPrivateKey } from "@latticexyz/common"
+import { privateKeyToAccount } from "viem/accounts"
 
 const styleUnset = { all: "unset" } as const
 
@@ -9,6 +11,8 @@ export const App = () => {
 		systemCalls: { addTask, toggleTask, deleteTask },
 	} = useMUD()
 
+	const account = privateKeyToAccount(getBurnerPrivateKey())
+
 	const tasks = useStore((state) => {
 		const records = Object.values(state.getRecords(tables.Tasks))
 		records.sort((a, b) => Number(a.value.createdAt - b.value.createdAt))
@@ -17,7 +21,7 @@ export const App = () => {
 
 	return (
 		<>
-			<div>Burner address: {walletClient.account.address}</div>
+			<div>Burner address: {walletClient.account?.address}</div>
 			<br />
 			<table>
 				<tbody>
@@ -104,7 +108,7 @@ export const App = () => {
 				</tfoot>
 			</table>
 			<br />
-			{walletClient && <Chat account={walletClient.account} />}
+			<Chat account={account} />
 		</>
 	)
 }
