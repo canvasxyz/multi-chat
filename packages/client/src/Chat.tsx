@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react"
-import { WalletClient } from "viem"
 import { useCanvas } from "@canvas-js/hooks"
+import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
+import { getBurnerPrivateKey } from "@latticexyz/common"
+import { PrivateKeyAccount } from "viem"
+import { privateKeyToAccount } from "viem/accounts"
 
 import { ChatInstance } from "./ChatInstance"
+import { CanvasEvents } from "@canvas-js/core"
 
 export type Message = {
 	id: "string"
@@ -11,13 +15,14 @@ export type Message = {
 	timestamp: "number"
 }
 
-export const Chat = ({ walletClient }: { walletClient: WalletClient }) => {
+export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 	const [rooms, setRooms] = useState<string[]>([])
 	const [prefix, setPrefix] = useState("room")
 
-	const [onlinePeers, setOnlinePeers] = useState({})
+	const [onlinePeers, setOnlinePeers] = useState<Record<string, PeerId>>({})
 
 	const { app } = useCanvas({
+		signers: [new SIWESignerViem({ signer: account })],
 		contract: { models: {}, actions: {}, topic: "chat-meta" },
 		discoveryTopic: "canvas-discovery",
 		trackAllPeers: true,
@@ -29,8 +34,10 @@ export const Chat = ({ walletClient }: { walletClient: WalletClient }) => {
 	})
 
 	useEffect(() => {
-		const handlePresenceChange = ({ detail: { peers, peerId, env } }) => {
-			const onlinePeers = {}
+		const handlePresenceChange = ({
+			detail: { peers },
+		}: CanvasEvents["presence:join"] | CanvasEvents["presence:leave"]) => {
+			const onlinePeers: Record<string, PeerId> = {} // TODO: re-export PeerId
 			for (const { peerId, env, lastSeen, topics } of Object.values(peers)) {
 				if (env !== "browser") continue
 				for (const topic of topics) {
@@ -83,7 +90,7 @@ export const Chat = ({ walletClient }: { walletClient: WalletClient }) => {
 				)
 			})}
 			{rooms.map((room, index) => (
-				<ChatInstance key={room} topic={room} left={30 + index * 300} walletClient={walletClient} />
+				<ChatInstance key={room} topic={room} left={30 + index * 300} account={account} />
 			))}
 		</>
 	)

@@ -17,6 +17,8 @@ export const App = () => {
 
 	return (
 		<>
+			<div>Burner address: {walletClient.account.address}</div>
+			<br />
 			<table>
 				<tbody>
 					{tasks.map((task) => (
@@ -102,7 +104,7 @@ export const App = () => {
 				</tfoot>
 			</table>
 			<br />
-			<Chat walletClient={walletClient} />
+			{walletClient && <Chat account={walletClient.account} />}
 		</>
 	)
 }

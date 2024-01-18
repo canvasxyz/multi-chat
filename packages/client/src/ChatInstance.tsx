@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from "react"
-import { WalletClient, createWalletClient } from "viem"
+import { useRef, useState, useEffect } from "react"
+import { PrivateKeyAccount } from "viem/accounts"
 
 import { AppConnectionStatus, CanvasEvents, Connections } from "@canvas-js/core"
 import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
@@ -7,15 +7,7 @@ import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
 
 import { Message } from "./Chat"
 
-export const ChatInstance = ({
-	topic,
-	left,
-	walletClient,
-}: {
-	topic: string
-	left: number
-	walletClient: WalletClient
-}) => {
+export const ChatInstance = ({ topic, left, account }: { topic: string; left: number; account: PrivateKeyAccount }) => {
 	const [status, setStatus] = useState<AppConnectionStatus>("disconnected")
 	const [connections, setConnections] = useState<Connections>({})
 
@@ -41,7 +33,7 @@ export const ChatInstance = ({
 			},
 			topic,
 		},
-		signers: [new SIWESignerViem({ signer: walletClient })],
+		signers: [new SIWESignerViem({ signer: account })],
 		indexHistory: false,
 		discoveryTopic: "canvas-discovery",
 		bootstrapList: [
@@ -201,7 +193,11 @@ export const ChatInstance = ({
 								e.stopPropagation()
 							}}
 						/>{" "}
-						<input type="submit" value="Send" />
+						<input
+							type="submit"
+							value={status !== "connected" ? "Connecting..." : "Send"}
+							disabled={!app || status !== "connected"}
+						/>
 					</form>
 				</div>
 			)}
