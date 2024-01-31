@@ -36,14 +36,14 @@ importers:
   packages/client:
     dependencies:
       '@canvas-js/chain-ethereum-viem':
-        specifier: ^0.8.24
-        version: 0.8.24(ethers@6.9.0)(typescript@5.1.6)(zod@3.22.4)
+        specifier: ^0.8.26
+        version: 0.8.26(ethers@6.9.0)(typescript@5.1.6)(zod@3.22.4)
       '@canvas-js/core':
-        specifier: ^0.8.24
-        version: 0.8.24(react-native@0.73.1)(react@18.2.0)
+        specifier: ^0.8.26
+        version: 0.8.26(react-native@0.73.1)(react@18.2.0)
       '@canvas-js/hooks':
-        specifier: ^0.8.24
-        version: 0.8.24(react-native@0.73.1)
+        specifier: ^0.8.26
+        version: 0.8.26(react-native@0.73.1)
       '@latticexyz/common':
         specifier: 2.0.0-next.15
         version: 2.0.0-next.15(typescript@5.1.6)(zod@3.22.4)
@@ -1598,14 +1598,14 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@canvas-js/chain-ethereum-viem@0.8.24(ethers@6.9.0)(typescript@5.1.6)(zod@3.22.4):
-    resolution: {integrity: sha512-fnuVBk1BtaJtSr4ZUV59Yw7C9r4LhNdqPZ5SRjbExV3yzf65jmI2oP+hNAu+G34F/Do/rPLzumhIQ3ZPAfOxLw==}
+  /@canvas-js/chain-ethereum-viem@0.8.26(ethers@6.9.0)(typescript@5.1.6)(zod@3.22.4):
+    resolution: {integrity: sha512-Zb79yLg8CVTZWzwjeQTFhlg94XfbT+US9ncR8oQtA3OqOCz94DER0ufCP/rNjhWo0LkLO+Z/HaDpxHIP/FEXMQ==}
     dependencies:
-      '@canvas-js/interfaces': 0.8.24
-      '@canvas-js/signed-cid': 0.8.24
+      '@canvas-js/interfaces': 0.8.26
+      '@canvas-js/signed-cid': 0.8.26
       '@ipld/dag-json': 10.1.5
       '@libp2p/logger': 4.0.3
-      multiformats: 12.1.3
+      multiformats: 13.0.1
       siwe: 2.1.4(ethers@6.9.0)
       viem: 1.14.0(typescript@5.1.6)(zod@3.22.4)
     transitivePeerDependencies:
@@ -1617,15 +1617,15 @@ packages:
       - zod
     dev: false
 
-  /@canvas-js/chain-ethereum@0.8.24:
-    resolution: {integrity: sha512-A8oHyWD3G/Fd6nB8ha+PyA+QVVm+KFVCX7Dr//MnDAjnLTwfHNyNA/CFgHvB50wB3pBBXpdrNqzsPcSbXV73jw==}
+  /@canvas-js/chain-ethereum@0.8.26:
+    resolution: {integrity: sha512-7xQKlZlcLz8Bx6sUEDdE6uAZBYv7ZaLnCOBPtVeGMTsiCriojxLxUIaqSZazyOq6oLQcjPKiuNTESqOb2H5tJA==}
     dependencies:
-      '@canvas-js/interfaces': 0.8.24
-      '@canvas-js/signed-cid': 0.8.24
+      '@canvas-js/interfaces': 0.8.26
+      '@canvas-js/signed-cid': 0.8.26
       '@ipld/dag-json': 10.1.5
       '@libp2p/logger': 4.0.3
       ethers: 6.9.0
-      multiformats: 12.1.3
+      multiformats: 13.0.1
       siwe: 2.1.4(ethers@6.9.0)
     transitivePeerDependencies:
       - bufferutil
@@ -1633,17 +1633,17 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@canvas-js/core@0.8.24(react-native@0.73.1)(react@18.2.0):
-    resolution: {integrity: sha512-s4sGJ6auLPQbPJdvNlTw+zq33UgZKfDkNsjDpzwWzjOz0E2fLfYg3PQ+4DJZd7LxrsNi07PO0OlMxveVhmTXOQ==}
+  /@canvas-js/core@0.8.26(react-native@0.73.1)(react@18.2.0):
+    resolution: {integrity: sha512-lQTpB2BiApv4T8DTKKpmu77EbtZTuZJg9GZgLuGrS3COMAznR92PNh/Ce0oHpbPYhVgjL3GYe4rNmRRRQOIW2A==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      '@canvas-js/chain-ethereum': 0.8.24
-      '@canvas-js/discovery': 0.8.24(@chainsafe/libp2p-gossipsub@11.0.1)
-      '@canvas-js/gossiplog': 0.8.24(@chainsafe/libp2p-gossipsub@11.0.1)
-      '@canvas-js/interfaces': 0.8.24
-      '@canvas-js/modeldb': 0.8.24(react@18.2.0)
-      '@canvas-js/signed-cid': 0.8.24
-      '@canvas-js/vm': 0.8.24
+      '@canvas-js/chain-ethereum': 0.8.26
+      '@canvas-js/discovery': 0.8.26(@chainsafe/libp2p-gossipsub@11.0.1)
+      '@canvas-js/gossiplog': 0.8.26(@chainsafe/libp2p-gossipsub@11.0.1)
+      '@canvas-js/interfaces': 0.8.26
+      '@canvas-js/modeldb': 0.8.26(react@18.2.0)
+      '@canvas-js/signed-cid': 0.8.26
+      '@canvas-js/vm': 0.8.26
       '@chainsafe/libp2p-gossipsub': 11.0.1
       '@chainsafe/libp2p-noise': 14.1.0
       '@ipld/dag-cbor': 9.0.6
@@ -1677,10 +1677,10 @@ packages:
       http-status-codes: 2.3.0
       libp2p: 1.1.0
       microcbor: 0.3.0
-      multiformats: 12.1.3
+      multiformats: 13.0.1
       p-queue: 8.0.1
       prom-client: 15.0.0
-      quickjs-emscripten: 0.24.0
+      quickjs-emscripten: 0.26.0
       uint8arraylist: 2.4.7
       uint8arrays: 5.0.1
     transitivePeerDependencies:
@@ -1691,12 +1691,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@canvas-js/discovery@0.8.24(@chainsafe/libp2p-gossipsub@11.0.1):
-    resolution: {integrity: sha512-A1Owuj8FGmDVNC4OX21YVXawzoFguKPqsjsEqULOLbAZr36rrQEiHTEL1vWiA8WkklZVPNwZFZNroyMBGFK5Qw==}
+  /@canvas-js/discovery@0.8.26(@chainsafe/libp2p-gossipsub@11.0.1):
+    resolution: {integrity: sha512-GiMxQdXGL0ql9yDP77q8wDkMrVHmiwEk802xyiVlC8Wp7dAXyHC7UriSG2zjLOR4dLbO4+i6UEbMryQZ2qAeXg==}
     peerDependencies:
       '@chainsafe/libp2p-gossipsub': ^11.0.1
     dependencies:
-      '@canvas-js/interfaces': 0.8.24
+      '@canvas-js/interfaces': 0.8.26
       '@chainsafe/libp2p-gossipsub': 11.0.1
       '@ipld/dag-cbor': 9.0.6
       '@libp2p/fetch': 1.0.6
@@ -1711,18 +1711,18 @@ packages:
       - supports-color
     dev: false
 
-  /@canvas-js/gossiplog@0.8.24(@chainsafe/libp2p-gossipsub@11.0.1):
-    resolution: {integrity: sha512-jcUHvR+lVWvLnr1aWsSoB1mAqjvVBy2DkNamg4xWlKXS2o6ag8nHQ4IV1TFdAjxiDjAL3un5+NOi1XaZeHQPXA==}
+  /@canvas-js/gossiplog@0.8.26(@chainsafe/libp2p-gossipsub@11.0.1):
+    resolution: {integrity: sha512-latMPm0WVri8xlwdx+JNhTFobqXvbMXUFKoW5hJHM8nVpQftJd0lFFKNWK2gCwbsflN1nsk7JtwKJYZOce6Emw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@chainsafe/libp2p-gossipsub': ^11.0.1
     dependencies:
-      '@canvas-js/interfaces': 0.8.24
+      '@canvas-js/interfaces': 0.8.26
       '@canvas-js/okra': 0.2.0
       '@canvas-js/okra-idb': 0.2.2(idb@8.0.0)
       '@canvas-js/okra-memory': 0.2.1
       '@canvas-js/okra-node': 0.5.6
-      '@canvas-js/signed-cid': 0.8.24
+      '@canvas-js/signed-cid': 0.8.26
       '@chainsafe/libp2p-gossipsub': 11.0.1
       '@ipld/dag-cbor': 9.0.6
       '@ipld/schema': 4.2.5
@@ -1738,7 +1738,7 @@ packages:
       it-pipe: 3.0.1
       it-pushable: 3.2.3
       it-stream-types: 2.0.1
-      multiformats: 12.1.3
+      multiformats: 13.0.1
       nanoid: 5.0.4
       p-queue: 8.0.1
       protons-runtime: 5.2.0
@@ -1748,12 +1748,12 @@ packages:
       - supports-color
     dev: false
 
-  /@canvas-js/hooks@0.8.24(react-native@0.73.1):
-    resolution: {integrity: sha512-v4qv5eVE4qLLpuV4BBqjX8qpDI0CZELQv3vwo671+QaqdPmSXrkpu+p7Jrg9hYchRdOI+IIAZy7kKfgT5E6d/A==}
+  /@canvas-js/hooks@0.8.26(react-native@0.73.1):
+    resolution: {integrity: sha512-laHZDWuhKGsburmCRTx6iTUxqgHLFsENKTJtMNFKRzEInvWdCPu645YYnVce8nrCPEW+hRJCnqaL5H9Zjeh+1Q==}
     dependencies:
-      '@canvas-js/core': 0.8.24(react-native@0.73.1)(react@18.2.0)
-      '@canvas-js/interfaces': 0.8.24
-      '@canvas-js/modeldb': 0.8.24(react@18.2.0)
+      '@canvas-js/core': 0.8.26(react-native@0.73.1)(react@18.2.0)
+      '@canvas-js/interfaces': 0.8.26
+      '@canvas-js/modeldb': 0.8.26(react@18.2.0)
       react: 18.2.0
     transitivePeerDependencies:
       - bufferutil
@@ -1762,14 +1762,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@canvas-js/interfaces@0.8.24:
-    resolution: {integrity: sha512-0zjxe/6pvNFZ7SQqVohU60jUTaI7HnfSosQC2xp5143j409hGyiUFFCNyxRvQu4a2CG0w/I/k56Bb04jbt1L1A==}
+  /@canvas-js/interfaces@0.8.26:
+    resolution: {integrity: sha512-JC1E1ykRPHQFgZAbwL4l+iOwp2zPAjtQUUTMyPgEUWm70cvw31+9y3chnHpfTqdDCSlgZ0xohk1pNHzqJv0puA==}
     dependencies:
-      multiformats: 12.1.3
+      multiformats: 13.0.1
     dev: false
 
-  /@canvas-js/modeldb@0.8.24(react@18.2.0):
-    resolution: {integrity: sha512-N2liBW1uIXDXLCO7bb4TXkR9HL4z5EhFcFQHL0I53vibbieo06UWX3Gl2B/BcCm0Lm3Wvqd+NW65nQQ+z4M0Qw==}
+  /@canvas-js/modeldb@0.8.26(react@18.2.0):
+    resolution: {integrity: sha512-oilhWYa/ws/9BQOuZF9MLTWxGjAtEOHuMusgGgGeUB+F9wEGUmObKjSHYkwlVKco9EUU+CB5zlQrfYEWBKmijQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.2.0
@@ -1836,24 +1836,24 @@ packages:
       - supports-color
     dev: false
 
-  /@canvas-js/signed-cid@0.8.24:
-    resolution: {integrity: sha512-Y+uVx9hC8eQ+ZoJw/kbQH/MvhhUO6RBpYI8YO9Z7pYvTjy9CznAUiqoRANTpz1ALHgsRkEPNe+tu5j8h9Z1cPQ==}
+  /@canvas-js/signed-cid@0.8.26:
+    resolution: {integrity: sha512-vh4AGM9ah5YprQ5i/EzZ4eKpZG9hh9LNQc+pU8CLXe0L2ofasCsTvI29BmP9DkYxaE67kqnvujhuJTL6Aqzz7A==}
     engines: {node: '>=18.0.0'}
     dependencies:
       '@ipld/dag-cbor': 9.0.6
       '@ipld/dag-json': 10.1.5
       '@noble/curves': 1.3.0
       '@noble/hashes': 1.3.3
-      multiformats: 12.1.3
+      multiformats: 13.0.1
     dev: false
 
-  /@canvas-js/vm@0.8.24:
-    resolution: {integrity: sha512-SseiCsWsXXcJkg7nZfZuzeMB0NBcjyvHM8M4oJ/HBvRuUkPKxmovD8RUz/nwpIsQHcwftyLcdhgsQkEi6qulbA==}
+  /@canvas-js/vm@0.8.26:
+    resolution: {integrity: sha512-JQ0uzuKVxGqCoOLYHxVTo/9+y260d5WwKRgKlT3wTD3qhKwbDyY7yZo9J6A2TNqm2tYWV53O/9rMAWNrCneC+A==}
     engines: {node: '>=18.0.0'}
     dependencies:
       '@libp2p/logger': 4.0.3
       '@noble/hashes': 1.3.3
-      quickjs-emscripten: 0.24.0
+      quickjs-emscripten: 0.26.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2732,6 +2732,34 @@ packages:
       chalk: 4.1.2
     dev: false
 
+  /@jitl/quickjs-ffi-types@0.26.0:
+    resolution: {integrity: sha512-49pRXLrdnhglSm5tzBcoa8Q0H5Gscm9IgzQKLeBWYJnDzLoWw4SLZspRTxfxB168uUmwszWy0uBCG6QZYvDTxw==}
+    dev: false
+
+  /@jitl/quickjs-wasmfile-debug-asyncify@0.26.0:
+    resolution: {integrity: sha512-uApydMFA2re/zR2ITUjpua7AD9wJgoPayyldxAh7c0Y0eh+Q1ttJL54HzfEU6Jh4kEver28YpqaEcj9/4d96bw==}
+    dependencies:
+      '@jitl/quickjs-ffi-types': 0.26.0
+    dev: false
+
+  /@jitl/quickjs-wasmfile-debug-sync@0.26.0:
+    resolution: {integrity: sha512-M5BeymxjnFunAWHwfgj3uEv0LvWdzjHugOuieygVMoi+fQ020o4rlCcjbttqZZiFgII8HWV4jbBm4vwsbgbCaw==}
+    dependencies:
+      '@jitl/quickjs-ffi-types': 0.26.0
+    dev: false
+
+  /@jitl/quickjs-wasmfile-release-asyncify@0.26.0:
+    resolution: {integrity: sha512-TLgIZAv292dW2I6PoM2yKPR5t+XqKDZS/Sezy8pi8rsZamDscjt9AM8f2QA+YNpyUPU4zTcaUX3Ccp5bj8d20w==}
+    dependencies:
+      '@jitl/quickjs-ffi-types': 0.26.0
+    dev: false
+
+  /@jitl/quickjs-wasmfile-release-sync@0.26.0:
+    resolution: {integrity: sha512-6VLyG89jAcIv/Y868yVaZD1K/uqguH2eHHL5DCXiYHSR6Q614LeRRtAVXygRu8MtOWKZ0O6Uong/KzJ+1hLEHg==}
+    dependencies:
+      '@jitl/quickjs-ffi-types': 0.26.0
+    dev: false
+
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
     engines: {node: '>=6.0.0'}
@@ -3113,7 +3141,7 @@ packages:
       delay: 6.0.0
       it-protobuf-stream: 1.1.1
       it-stream-types: 2.0.1
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       p-defer: 4.0.0
       p-retry: 6.1.0
       protons-runtime: 5.2.0
@@ -3130,7 +3158,7 @@ packages:
       '@libp2p/interface': 1.1.0
       '@noble/curves': 1.3.0
       '@noble/hashes': 1.3.3
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       node-forge: 1.3.1
       protons-runtime: 5.2.0
       uint8arraylist: 2.4.7
@@ -3214,7 +3242,7 @@ packages:
       '@multiformats/multiaddr': 12.1.11
       it-pushable: 3.2.3
       it-stream-types: 2.0.1
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       progress-events: 1.0.0
       uint8arraylist: 2.4.7
     transitivePeerDependencies:
@@ -3228,7 +3256,7 @@ packages:
       '@multiformats/multiaddr': 12.1.11
       debug: 4.3.4
       interface-datastore: 8.2.7
-      multiformats: 13.0.0
+      multiformats: 13.0.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -3281,7 +3309,7 @@ packages:
       '@libp2p/crypto': 3.0.3
       '@libp2p/interface': 1.1.0
       '@libp2p/peer-id': 4.0.3
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       protons-runtime: 5.2.0
       uint8arraylist: 2.4.7
       uint8arrays: 5.0.1
@@ -3293,7 +3321,7 @@ packages:
     resolution: {integrity: sha512-foWCxk5rPf6ItLvlrCcML0p6bZ6i6TxAt9N7ihCCr8UV6mT2KWN1CC/D+N34wnHKz8cAtaylExOqwoNiacjR5A==}
     dependencies:
       '@libp2p/interface': 1.1.0
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       uint8arrays: 5.0.1
     transitivePeerDependencies:
       - supports-color
@@ -3327,7 +3355,7 @@ packages:
       interface-datastore: 8.2.7
       it-all: 3.0.4
       mortice: 3.0.1
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       protons-runtime: 5.2.0
       uint8arraylist: 2.4.7
       uint8arrays: 5.0.1
@@ -3421,7 +3449,7 @@ packages:
       it-pushable: 3.2.3
       it-stream-types: 2.0.1
       it-to-buffer: 4.0.4
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       multihashes: 4.0.3
       node-datachannel: 0.5.3
       p-defer: 4.0.0
@@ -7213,7 +7241,7 @@ packages:
       it-pipe: 3.0.1
       it-stream-types: 2.0.1
       merge-options: 3.0.4
-      multiformats: 13.0.0
+      multiformats: 13.0.1
       p-defer: 4.0.0
       p-queue: 8.0.1
       private-ip: 3.0.1
@@ -7733,8 +7761,8 @@ packages:
     resolution: {integrity: sha512-eajQ/ZH7qXZQR2AgtfpmSMizQzmyYVmCql7pdhldPuYQi4atACekbJaQplk6dWyIi10jCaFnd6pqvcEFXjbaJw==}
     engines: {node: '>=16.0.0', npm: '>=7.0.0'}
 
-  /multiformats@13.0.0:
-    resolution: {integrity: sha512-xiIB0p7EKmETm3wyKedOg/xuyQ18PoWwXCzzgpZAiDxL9ktl3XTh8AqoDT5kAqRg+DU48XAGPsUJL2Rn6Bx3Lw==}
+  /multiformats@13.0.1:
+    resolution: {integrity: sha512-bt3R5iXe2O8xpp3wkmQhC73b/lC4S2ihU8Dndwcsysqbydqb8N+bpP116qMcClZ17g58iSIwtXUTcg2zT4sniA==}
     dev: false
 
   /multiformats@9.9.0:
@@ -8443,8 +8471,21 @@ packages:
       inherits: 2.0.4
     dev: false
 
-  /quickjs-emscripten@0.24.0:
-    resolution: {integrity: sha512-2F6Trog3fXOIc9pPDEHnsmIs97ACg2MbNzzrwBVN3trwqyZnO0PFJci8ePkjJ2l2J3UIn1k0Sy4yILX+1hZJgw==}
+  /quickjs-emscripten-core@0.26.0:
+    resolution: {integrity: sha512-RFglP182/9sTYirChNUsQOIbH70goOMe4rVr0G4aJykIk0m9ogglUvhXP7iANOeA9CFCKB93ORp6DJ5KJctbKg==}
+    dependencies:
+      '@jitl/quickjs-ffi-types': 0.26.0
+    dev: false
+
+  /quickjs-emscripten@0.26.0:
+    resolution: {integrity: sha512-0xv4U8lyWDzXbXZUxoNIGATlI7+j57LmeYZRsQDym3yLDJDnG3o9AVNorQniGRw+CmeuMSufNLtfwPw9U/r3QA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@jitl/quickjs-wasmfile-debug-asyncify': 0.26.0
+      '@jitl/quickjs-wasmfile-debug-sync': 0.26.0
+      '@jitl/quickjs-wasmfile-release-asyncify': 0.26.0
+      '@jitl/quickjs-wasmfile-release-sync': 0.26.0
+      quickjs-emscripten-core: 0.26.0
     dev: false
 
   /race-signal@1.0.2:
@@ -9495,7 +9536,7 @@ packages:
   /uint8arrays@5.0.1:
     resolution: {integrity: sha512-ND5RpJAnPgHmZT7hWD/2T4BwRp04j8NLKvMKC/7bhiEwEjUMkQ4kvBKiH6hOqbljd6qJ2xS8reL3vl1e33grOQ==}
     dependencies:
-      multiformats: 13.0.0
+      multiformats: 13.0.1
     dev: false
 
   /unbox-primitive@1.0.2:
