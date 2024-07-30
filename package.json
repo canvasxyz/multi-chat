@@ -1,5 +1,5 @@
 {
-  "name": "@canvas-js/multi-client",
+  "name": "@canvas-js/multi-chat",
   "private": true,
   "scripts": {
     "build": "vite build",

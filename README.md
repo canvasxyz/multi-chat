@@ -1,3 +1,5 @@
+# multi-chat
+
 ### Developing
 
 ```
@@ -10,15 +12,11 @@ pnpm dev
 ```
 pnpm install
 pnpm build
-cd packages/client/dist
-serve
+serve dist
 ```
 
-### Deploying to Vercel
+### Deploying
 
 ```
-vercel build
-vercel deploy --prebuilt
+vercel --prod
 ```
-
-Then go to Vercel and promote the development build to production.

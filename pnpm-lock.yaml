@@ -54,9 +54,6 @@ importers:
       vite:
         specifier: ^4.2.1
         version: 4.5.3(@types/node@22.0.0)(terser@5.31.3)
-      wait-port:
-        specifier: ^1.0.4
-        version: 1.1.0
 
 packages:
 
@@ -3998,11 +3995,6 @@ packages:
 
   vlq@1.0.1:
     resolution: {integrity: sha512-gQpnTgkubC6hQgdIcRdYGDSDc+SaujOdyesZQMv6JlfQee/9Mp0Qhnys6WxDWvQnL5WZdT7o2Ul187aSt0Rq+w==}
-
-  wait-port@1.1.0:
-    resolution: {integrity: sha512-3e04qkoN3LxTMLakdqeWth8nih8usyg+sf1Bgdf9wwUkp05iuK1eSY/QpLvscT/+F/gA89+LpUmmgBtesbqI2Q==}
-    engines: {node: '>=10'}
-    hasBin: true
 
   walker@1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
@@ -9304,14 +9296,6 @@ snapshots:
       terser: 5.31.3
 
   vlq@1.0.1: {}
-
-  wait-port@1.1.0:
-    dependencies:
-      chalk: 4.1.2
-      commander: 9.5.0
-      debug: 4.3.6
-    transitivePeerDependencies:
-      - supports-color
 
   walker@1.0.8:
     dependencies:
