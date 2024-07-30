@@ -14,7 +14,7 @@ export const App = () => {
 				setAccount(privateKeyToAccount(privkey as Hex))
 				return
 			} catch (err) {}
-		} 
+		}
 		const newPrivkey = generatePrivateKey()
 		localStorage.setItem("burnerWallet", newPrivkey)
 		setAccount(privateKeyToAccount(newPrivkey))
