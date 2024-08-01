@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import { useCanvas } from "@canvas-js/hooks"
-import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
+// import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
 import { PrivateKeyAccount } from "viem"
 
 import { ChatInstance } from "./ChatInstance"
-import { CanvasEvents } from "@canvas-js/core"
+// import { CanvasEvents } from "@canvas-js/core"
 
 export type Message = {
 	id: "string"
@@ -21,42 +21,35 @@ export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 
 	const [onlinePeers, setOnlinePeers] = useState<Record<string, PeerId>>({})
 
-	const { app } = useCanvas({
-		signers: [new SIWESignerViem({ signer: account })],
-		contract: { models: {}, actions: {}, topic: "chat-meta" },
-		discoveryTopic: "canvas-discovery",
-		trackAllPeers: true,
-		bootstrapList: [
-			"/dns4/canvas-chat-discovery-p0.fly.dev/tcp/443/wss/p2p/12D3KooWG1zzEepzv5ib5Rz16Z4PXVfNRffXBGwf7wM8xoNAbJW7",
-			"/dns4/canvas-chat-discovery-p1.fly.dev/tcp/443/wss/p2p/12D3KooWNfH4Z4ayppVFyTKv8BBYLLvkR1nfWkjcSTqYdS4gTueq",
-			"/dns4/canvas-chat-discovery-p2.fly.dev/tcp/443/wss/p2p/12D3KooWRBdFp5T1fgjWdPSCf9cDqcCASMBgcLqjzzBvptjAfAxN",
-		],
-	})
+	// const { app } = useCanvas({
+	// 	signers: [new SIWESignerViem({ signer: account })],
+	// 	contract: { models: {}, actions: {}, topic: "chat-meta" },
+	// })
 
-	useEffect(() => {
-		const handlePresenceChange = ({
-			detail: { peers },
-		}: CanvasEvents["presence:join"] | CanvasEvents["presence:leave"]) => {
-			const onlinePeers: Record<string, PeerId> = {} // TODO: re-export PeerId
-			for (const { peerId, env, lastSeen, topics } of Object.values(peers)) {
-				if (env !== "browser") continue
-				for (const topic of topics) {
-					if (topic.startsWith("canvas/" + prefix)) {
-						if (onlinePeers[topic] === undefined) onlinePeers[topic] = []
-						onlinePeers[topic].push(peerId)
-					}
-				}
-			}
-			setOnlinePeers(onlinePeers)
-		}
+	// useEffect(() => {
+	// 	const handlePresenceChange = ({
+	// 		detail: { peers },
+	// 	}: CanvasEvents["presence:join"] | CanvasEvents["presence:leave"]) => {
+	// 		const onlinePeers: Record<string, PeerId> = {} // TODO: re-export PeerId
+	// 		for (const { peerId, env, lastSeen, topics } of Object.values(peers)) {
+	// 			if (env !== "browser") continue
+	// 			for (const topic of topics) {
+	// 				if (topic.startsWith("canvas/" + prefix)) {
+	// 					if (onlinePeers[topic] === undefined) onlinePeers[topic] = []
+	// 					onlinePeers[topic].push(peerId)
+	// 				}
+	// 			}
+	// 		}
+	// 		setOnlinePeers(onlinePeers)
+	// 	}
 
-		app?.addEventListener("presence:join", handlePresenceChange)
-		app?.addEventListener("presence:leave", handlePresenceChange)
-		return () => {
-			app?.removeEventListener("presence:join", handlePresenceChange)
-			app?.removeEventListener("presence:leave", handlePresenceChange)
-		}
-	}, [app])
+	// 	app?.addEventListener("presence:join", handlePresenceChange)
+	// 	app?.addEventListener("presence:leave", handlePresenceChange)
+	// 	return () => {
+	// 		app?.removeEventListener("presence:join", handlePresenceChange)
+	// 		app?.removeEventListener("presence:leave", handlePresenceChange)
+	// 	}
+	// }, [app])
 
 	return (
 		<>
