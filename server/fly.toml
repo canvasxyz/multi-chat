@@ -1,0 +1,48 @@
+app = "canvas-multi-chat-server"
+kill_signal = "SIGINT"
+kill_timeout = 30
+
+[env]
+DEBUG = "canvas:*:error,canvas:gossiplog:*"
+PORT = "3000"
+PROXY_PORT = "8080"
+START_PORT = "49152"
+END_PORT = "57344"
+CANVAS_HOME = "/data"
+
+[mounts]
+destination = "/data"
+source = "data"
+
+[[services]]
+processes = ["app"]
+protocol = "tcp"
+internal_port = 3000
+
+[services.concurrency]
+type = "connections"
+hard_limit = 1000
+soft_limit = 800
+
+[[services.ports]]
+handlers = ["tls", "http"]
+port = 443
+
+[metrics]
+port = 3000
+path = "/metrics"
+
+# [[services]]
+# processes = ["app"]
+# protocol = "tcp"
+# internal_port = 8080
+
+# [services.concurrency]
+# type = "connections"
+# hard_limit = 1000
+# soft_limit = 800
+
+# [[services.ports]]
+# handlers = ["tls", "http"]
+# start_port = 49152
+# end_port = 57344

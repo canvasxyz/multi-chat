@@ -1,31 +1,19 @@
 {
-  "name": "@canvas-js/multi-chat",
-  "private": true,
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite",
-    "preview": "vite preview",
-    "test": "tsc --noEmit",
-    "server:dev": "tsx server/index.ts"
-  },
-  "dependencies": {
-    "@canvas-js/chain-ethereum-viem": "^0.10.3",
-    "@canvas-js/core": "^0.10.3",
-    "@canvas-js/hooks": "^0.10.3",
-    "ethers": "^6.9.0",
-    "lodash": "^4.17.21",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "viem": "^2.18.5"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.202",
-    "@types/react": "18.2.22",
-    "@types/react-dom": "18.2.7",
-    "@vitejs/plugin-react": "^3.1.0",
-    "eslint-plugin-react": "7.31.11",
-    "eslint-plugin-react-hooks": "4.6.0",
-    "tsx": "^4.16.2",
-    "vite": "^4.2.1"
-  }
+	"name": "@canvas-js/multi-chat",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsc --build --watch"
+	},
+	"workspaces": [
+		"./client",
+		"./server"
+	],
+	"devDependencies": {
+		"@vitejs/plugin-react": "^4.3.1",
+		"eslint-plugin-react": "^7.35.0",
+		"eslint-plugin-react-hooks": "^4.6.2",
+		"typescript": "^5.5.4"
+	}
 }

@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react"
-import { useCanvas } from "@canvas-js/hooks"
-// import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
+import React, { useState, useEffect } from "react"
 import { PrivateKeyAccount } from "viem"
 
-import { ChatInstance } from "./ChatInstance"
-// import { CanvasEvents } from "@canvas-js/core"
+import { ChatInstance } from "./ChatInstance.js"
 
 export type Message = {
 	id: "string"
@@ -20,11 +17,6 @@ export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 	const [prefix, setPrefix] = useState("room")
 
 	const [onlinePeers, setOnlinePeers] = useState<Record<string, PeerId>>({})
-
-	// const { app } = useCanvas({
-	// 	signers: [new SIWESignerViem({ signer: account })],
-	// 	contract: { models: {}, actions: {}, topic: "chat-meta" },
-	// })
 
 	// useEffect(() => {
 	// 	const handlePresenceChange = ({

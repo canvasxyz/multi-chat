@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { Chat } from "./Chat"
+import React, { useState, useEffect } from "react"
+import { Chat } from "./Chat.js"
 import { PrivateKeyAccount, privateKeyToAccount, generatePrivateKey } from "viem/accounts"
 import { Hex } from "viem"
 

@@ -1,11 +1,14 @@
-import { useRef, useState, useEffect } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { PrivateKeyAccount } from "viem/accounts"
 
-// import { CanvasEvents } from "@canvas-js/core"
+import { multiaddr } from "@multiformats/multiaddr"
 import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
 import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
 
-import { Message } from "./Chat"
+import { Message } from "./Chat.js"
+
+// const apiRoot = "http://127.0.0.1:3000"
+const apiRoot = "https://canvas-multi-chat-server.fly.dev"
 
 export const ChatInstance = ({ topic, left, account }: { topic: string; left: number; account: PrivateKeyAccount }) => {
 	// const [status, setStatus] = useState<AppConnectionStatus>("disconnected")
@@ -18,7 +21,7 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	const { app } = useCanvas({
-		start: true,
+		start: false,
 		topic,
 		contract: {
 			models: {
@@ -37,6 +40,18 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 		},
 		signers: [new SIWESignerViem({ signer: account })],
 	})
+
+	useEffect(() => {
+		if (app === undefined) return
+
+		Promise.resolve(app.libp2p.start()).then(
+			() =>
+				fetch(`${apiRoot}/topic/${app.topic}`)
+					.then((res) => res.json())
+					.then(({ addrs }: { addrs: string[] }) => app.libp2p.dial(addrs.map((addr) => multiaddr(addr)))),
+			(err) => console.error(err),
+		)
+	}, [app])
 
 	const messages = useLiveQuery<Message>(app, "message", {
 		orderBy: { timestamp: "asc" },

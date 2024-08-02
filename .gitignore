@@ -1,9 +1,6 @@
-.env
-
-dist/
-out/
 node_modules/
-packages/contracts/cache/
-packages/contracts/broadcast/
-packages/contracts/deploys/
-.vercel
+client/lib/
+server/lib/
+data/
+.env
+tsconfig.tsbuildinfo
