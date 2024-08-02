@@ -50,7 +50,7 @@ export class Daemon {
 			if (app === undefined) {
 				this.start(req.params.topic, contract).then(
 					(app) => {
-						const controller = new DelayableController(30 * minute)
+						// const controller = new DelayableController(30 * minute)
 						res.json({ topic: app.topic, addrs: app.libp2p.getMultiaddrs().map((addr) => addr.toString()) })
 					},
 					(err) => res.status(StatusCodes.INTERNAL_SERVER_ERROR).end(`${err}`),
@@ -60,9 +60,9 @@ export class Daemon {
 			}
 		})
 
-		this.api.use("/api/:name", (req, res, next) => {
+		this.api.use("/api/:topic", (req, res, next) => {
 			this.queue.add(() => {
-				const app = this.apps.get(req.params.name)
+				const app = this.apps.get(req.params.topic)
 				if (app === undefined) {
 					return void res.status(StatusCodes.NOT_FOUND).end()
 				}

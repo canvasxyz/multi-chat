@@ -28,21 +28,21 @@ soft_limit = 800
 handlers = ["tls", "http"]
 port = 443
 
+[[services]]
+processes = ["app"]
+protocol = "tcp"
+internal_port = 8080
+
+[services.concurrency]
+type = "connections"
+hard_limit = 1000
+soft_limit = 800
+
+[[services.ports]]
+handlers = ["tls", "http"]
+start_port = 49152
+end_port = 57344
+
 [metrics]
 port = 3000
 path = "/metrics"
-
-# [[services]]
-# processes = ["app"]
-# protocol = "tcp"
-# internal_port = 8080
-
-# [services.concurrency]
-# type = "connections"
-# hard_limit = 1000
-# soft_limit = 800
-
-# [[services.ports]]
-# handlers = ["tls", "http"]
-# start_port = 49152
-# end_port = 57344
