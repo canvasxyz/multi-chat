@@ -11,12 +11,9 @@ import { Message } from "./Chat.js"
 const apiRoot = "https://canvas-multi-chat-server.fly.dev"
 
 export const ChatInstance = ({ topic, left, account }: { topic: string; left: number; account: PrivateKeyAccount }) => {
-	// const [status, setStatus] = useState<AppConnectionStatus>("disconnected")
-	// const [connections, setConnections] = useState<Connections>({})
-	// const [connections, setConnections] = useState<string[]>([])
+	const [peers, setPeers] = useState<string[]>([])
 
 	const [chatOpen, setChatOpen] = useState(true)
-	// const [peersByTopic, setPeersByTopic] = useState<Record<string, string[]>>({})
 	const scrollboxRef = useRef<HTMLDivElement>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 
@@ -43,6 +40,14 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 
 	useEffect(() => {
 		if (app === undefined) return
+
+		app.libp2p.addEventListener("connection:open", ({ detail: connection }) =>
+			setPeers((peers) => Array.from(new Set([...peers, connection.remotePeer.toString()]))),
+		)
+
+		app.libp2p.addEventListener("connection:close", ({ detail: connection }) =>
+			setPeers((peers) => peers.filter((peer) => peer !== connection.remotePeer.toString())),
+		)
 
 		Promise.resolve(app.libp2p.start()).then(
 			() =>
@@ -154,6 +159,9 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 				})}
 			</div> */}
 			{/* <div style={{ padding: 10, paddingTop: 0 }}>{peersByTopic[`canvas/${topic}`]?.length || 0} other browsers</div> */}
+			<div style={{ padding: 10 }}>
+				{topic} ({peers.length} {peers.length === 1 ? "connection" : "connections"})
+			</div>
 			{chatOpen && (
 				<div>
 					<div
