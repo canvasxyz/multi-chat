@@ -1,6 +1,11 @@
 node_modules/
 client/lib/
 server/lib/
+load-test/lib/
 data/
 .env
 tsconfig.tsbuildinfo
+
+# Vercel
+.vercel/
+dist/

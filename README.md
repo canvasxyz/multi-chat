@@ -3,15 +3,15 @@
 ### Developing
 
 ```
-pnpm install
-pnpm dev
+npm install
+npm dev
 ```
 
 ### Building
 
 ```
-pnpm install
-pnpm build
+npm install
+npm build
 serve dist
 ```
 
