@@ -6,7 +6,7 @@
     "bundle:build": "npx webpack --config webpack.config.js",
     "bundle:watch": "npx webpack --config webpack.config.js --watch",
     "clean": "rm lib/*",
-    "start": "node lib/server.js"
+    "start": "node lib/runner.js"
   },
   "dependencies": {
     "@canvas-js/chain-ethereum": "0.10.4",
@@ -26,7 +26,7 @@
     "libp2p": "^1.5.1",
     "p-queue": "^8.0.0",
     "prom-client": "^15.0.0",
-    "puppeteer": "^22.7.1"
+    "puppeteer": "^22.11.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

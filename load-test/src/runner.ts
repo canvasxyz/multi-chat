@@ -5,6 +5,7 @@ import { Canvas } from "@canvas-js/core"
 
 declare global {
 	function log(...args: any[]): void
+	// function updateConnections(connections: Record<string, any>): void
 	function getClients(): { clients: number }
 	var _Canvas: Canvas
 	// @ts-ignore
@@ -45,6 +46,10 @@ const runLoadTest = async () => {
 		}
 	})
 
+	page.on("console", (msg) => {
+		console.log(`[${msg.type()}] ${msg.text()}`)
+	})
+
 	console.log("setting up browser context...")
 	await page.goto("http://localhost:3000")
 
@@ -53,6 +58,8 @@ const runLoadTest = async () => {
 	})
 
 	await page.exposeFunction("log", (...args: any[]) => console.log(...args))
+
+	await page.evaluate('localStorage.setItem("debug", "canvas:*")')
 
 	await page.evaluate(clientJs)
 
@@ -67,8 +74,8 @@ const runLoadTest = async () => {
 			try {
 				const topic = `room-${i % 30}.canvas.xyz`
 				const app = (await (_Canvas as any).initialize({
+					topic,
 					contract: {
-						topic,
 						models: {},
 						actions: {
 							createMessage: () => {},
@@ -108,7 +115,8 @@ const runLoadTest = async () => {
 				let j = 0
 				setInterval(async () => {
 					log(peers[topic], await app.messageLog.getClock())
-					app.actions.createMessage({ content: j++ })
+					console.log(await app.messageLog.db.count("$messages"))
+					app.actions.createMessage({ content: (j++).toString() })
 				}, 1000)
 			} catch (err: any) {
 				log("err", err.stack)
