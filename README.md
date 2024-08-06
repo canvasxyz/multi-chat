@@ -1,30 +1,44 @@
 # multi-chat
 
+### Developing
+
 Build the TypeScript project:
 
 ```
-<<<<<<< Updated upstream
-npm install
-npm dev
-=======
 npm run dev
->>>>>>> Stashed changes
 ```
 
-Serve the client vite project:
+Then, run the client vite server:
 
 ```
-<<<<<<< Updated upstream
-npm install
-npm build
-serve dist
-=======
 npm run dev -w client
->>>>>>> Stashed changes
 ```
 
-Run the server:
+Run the multi-chat server backend:
 
 ```
 npm run start -w server
+```
+
+### Deploying
+
+Build the client project:
+
+```
+npm install
+npm run build
+serve dist
+```
+
+Deploy the server to Fly:
+
+```
+cd server
+fly deploy
+```
+
+Deploy the client to Vercel:
+
+```
+vercel
 ```
