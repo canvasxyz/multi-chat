@@ -5,7 +5,7 @@ import { Canvas } from "@canvas-js/core"
 
 declare global {
 	function log(...args: any[]): void
-	function getConfig(): { numTopics: number }
+	function getConfig(): { numTopics: number; cycleUp: number; cycleDown: number }
 	// @ts-ignore
 	var _multiaddr: multiaddr
 	var _Canvas: Canvas
@@ -16,10 +16,10 @@ const cycleUp = process.env.UP ? parseInt(process.env.UP) : 120
 const cycleDown = process.env.DOWN ? parseInt(process.env.DOWN) : 60
 
 const loadTest = async () => {
-	const { numTopics } = await getConfig()
+	const { numTopics, cycleUp, cycleDown } = await getConfig()
 	const apiRoot = "http://localhost:3000"
 
-	let sending = false
+	let sending = true
 
 	/*
 	 * Set up `apps` and `peers`, and initialize `numTopics` apps
@@ -82,14 +82,14 @@ const loadTest = async () => {
 
 	let elapsed = 0
 	setInterval(async () => {
-		log(elapsed++, "seconds elapsed")
+		log(`${elapsed++} seconds elapsed, active: ${sending}`)
 
 		for (let i = 0; i < numTopics; i++) {
 			const online = peers[i].length > 0 ? "🟢" : "🔴"
 			const topic = `room-${i}.canvas.xyz`
 			const msgs = await apps[i].messageLog.db.count("$messages")
 			const [clock] = await apps[i].messageLog.getClock()
-			console.log(`${online} ${topic}: ${msgs} messages, ${clock} clock`)
+			log(`${online} ${topic}: ${msgs} messages, ${clock} clock`)
 		}
 
 		if (elapsed % (cycleUp + cycleDown) <= cycleUp) {
@@ -141,7 +141,7 @@ const runner = async () => {
 	await page.goto("http://localhost:3000")
 
 	await page.exposeFunction("getConfig", () => {
-		return { numTopics }
+		return { numTopics, cycleUp, cycleDown }
 	})
 
 	await page.exposeFunction("log", (...args: any[]) => console.log(...args))
