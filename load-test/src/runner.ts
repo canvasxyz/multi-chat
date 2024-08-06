@@ -5,18 +5,106 @@ import { Canvas } from "@canvas-js/core"
 
 declare global {
 	function log(...args: any[]): void
-	// function updateConnections(connections: Record<string, any>): void
-	function getClients(): { clients: number }
-	var _Canvas: Canvas
+	function getConfig(): { numTopics: number }
 	// @ts-ignore
 	var _multiaddr: multiaddr
+	var _Canvas: Canvas
 }
 
-const clients = process.env.CLIENTS ? parseInt(process.env.CLIENTS) : 10
-const runLoadTest = async () => {
-	console.log(`starting load test with ${clients} clients`)
+const numTopics = process.env.NUM_TOPICS ? parseInt(process.env.NUM_TOPICS) : 10
+const cycleUp = process.env.UP ? parseInt(process.env.UP) : 120
+const cycleDown = process.env.DOWN ? parseInt(process.env.DOWN) : 60
 
-	const clientJs = fs.readFileSync("./lib/bundle-compiled.js", { encoding: "utf8" })
+const loadTest = async () => {
+	const { numTopics } = await getConfig()
+	const apiRoot = "http://localhost:3000"
+
+	let sending = false
+
+	/*
+	 * Set up `apps` and `peers`, and initialize `numTopics` apps
+	 * (always one app for each topic) and connect them to the server
+	 */
+	const peers: Record<string, string[]> = {}
+	const apps: Record<string, Canvas> = {}
+
+	for (let i = 0; i < numTopics; i++) {
+		try {
+			const topic = `room-${i}.canvas.xyz`
+			const app = (await (_Canvas as any).initialize({
+				topic,
+				contract: {
+					models: {},
+					actions: {
+						createMessage: () => {},
+					},
+				},
+				start: false,
+				bootstrapList: [],
+			})) as Canvas
+			apps[i] = app
+
+			app.libp2p.addEventListener("connection:open", ({ detail: connection }) => {
+				peers[i] = peers[i] || []
+				peers[i] = Array.from(new Set([...peers[i], connection.remotePeer.toString()]))
+			})
+
+			app.libp2p.addEventListener("connection:close", ({ detail: connection }) => {
+				peers[i] = peers[i] || []
+				peers[i] = peers[i].filter((peer: string) => peer !== connection.remotePeer.toString())
+			})
+
+			Promise.resolve(app.libp2p.start())
+				.then(
+					() =>
+						fetch(`${apiRoot}/topic/${topic}`)
+							.then((res) => res.json())
+							.then(({ addrs }: { addrs: string[] }) => app.libp2p.dial(addrs.map((addr) => _multiaddr(addr))))
+							.then(() => log("app started: " + topic)),
+					(err) => log(err.stack),
+				)
+				.catch((err) => {
+					log(err.stack)
+				})
+
+			apps[i] = app
+
+			let j = 0
+			setInterval(async () => {
+				if (sending) {
+					await app.actions.createMessage({ content: (j++).toString() })
+				}
+			}, 1000)
+		} catch (err: any) {
+			log(err.stack)
+		}
+	}
+
+	let elapsed = 0
+	setInterval(async () => {
+		log(elapsed++, "seconds elapsed")
+
+		for (let i = 0; i < numTopics; i++) {
+			const online = peers[i].length > 0 ? "🟢" : "🔴"
+			const topic = `room-${i}.canvas.xyz`
+			const msgs = await apps[i].messageLog.db.count("$messages")
+			const [clock] = await apps[i].messageLog.getClock()
+			console.log(`${online} ${topic}: ${msgs} messages, ${clock} clock`)
+		}
+
+		if (elapsed % (cycleUp + cycleDown) <= cycleUp) {
+			sending = true
+		} else {
+			sending = false
+		}
+	}, 1000)
+}
+
+const runner = async () => {
+	console.log(`starting load test with ${numTopics} clients`)
+	console.log(`cycling up ${cycleUp} sec, down ${cycleDown} sec`)
+
+	const bundle = fs.readFileSync("./lib/bundle-compiled.js", { encoding: "utf8" })
 	const browser = await puppeteer.launch({
 		dumpio: true,
 		headless: true,
@@ -50,91 +138,21 @@ const runLoadTest = async () => {
 		console.log(`[${msg.type()}] ${msg.text()}`)
 	})
 
-	console.log("setting up browser context...")
 	await page.goto("http://localhost:3000")
 
-	await page.exposeFunction("getClients", () => {
-		return { clients }
+	await page.exposeFunction("getConfig", () => {
+		return { numTopics }
 	})
 
 	await page.exposeFunction("log", (...args: any[]) => console.log(...args))
 
-	await page.evaluate('localStorage.setItem("debug", "canvas:*")')
+	// await page.evaluate('localStorage.setItem("debug", "canvas:*")')
 
-	await page.evaluate(clientJs)
-
-	await page.evaluate(async () => {
-		const peers: Record<string, string[]> = {}
-		const apps: Record<string, Canvas> = {}
-		const apiRoot = "http://localhost:3000"
-
-		const { clients: N } = await getClients()
-
-		for (let i = 0; i < N; i++) {
-			try {
-				const topic = `room-${i % 30}.canvas.xyz`
-				const app = (await (_Canvas as any).initialize({
-					topic,
-					contract: {
-						models: {},
-						actions: {
-							createMessage: () => {},
-						},
-					},
-					start: false,
-					bootstrapList: [],
-				})) as Canvas
-
-				app.libp2p.addEventListener("connection:open", ({ detail: connection }) => {
-					peers[topic] = peers[topic] || []
-					peers[topic] = Array.from(new Set([...peers[topic], connection.remotePeer.toString()]))
-				})
-
-				app.libp2p.addEventListener("connection:close", ({ detail: connection }) => {
-					peers[topic] = peers[topic] || []
-					peers[topic] = peers[topic].filter((peer: string) => peer !== connection.remotePeer.toString())
-				})
-
-				Promise.resolve(app.libp2p.start())
-					.then(
-						() =>
-							fetch(`${apiRoot}/topic/${topic}`)
-								.then((res) => res.json())
-								.then(({ addrs }: { addrs: string[] }) => app.libp2p.dial(addrs.map((addr) => _multiaddr(addr))))
-								.then(() => log("app started: " + topic)),
-						(err) => log(err.stack),
-					)
-					.catch((err) => {
-						log("error starting libp2p")
-						log(err.message)
-						log(err.stack)
-					})
-
-				apps[i.toString()] = app
-
-				let j = 0
-				setInterval(async () => {
-					log(peers[topic], await app.messageLog.getClock())
-					console.log(await app.messageLog.db.count("$messages"))
-					app.actions.createMessage({ content: (j++).toString() })
-				}, 1000)
-			} catch (err: any) {
-				log("err", err.stack)
-			}
-		}
-
-		let tick = 0
-		setInterval(() => {
-			log(tick++, "seconds elapsed")
-			for (let i = 0; i < N; i++) {
-				const connections = peers[i.toString()].length
-				log(i, connections > 0 ? "🟢" : "🔴")
-			}
-		}, 1000)
-	})
+	await page.evaluate(bundle)
+	await page.evaluate(loadTest)
 }
 
-runLoadTest()
+runner()
 
 process.on("SIGINT", async () => {
 	console.log("\nReceived SIGINT. Attempting to shut down gracefully.")
