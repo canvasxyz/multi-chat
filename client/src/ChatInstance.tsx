@@ -1,7 +1,9 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useRef, useState, useEffect, useCallback } from "react"
 import { PrivateKeyAccount } from "viem/accounts"
 
 import { multiaddr } from "@multiformats/multiaddr"
+
+import { Canvas } from "@canvas-js/core"
 import { useCanvas, useLiveQuery } from "@canvas-js/hooks"
 import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
 
@@ -38,6 +40,19 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 		signers: [new SIWESignerViem({ signer: account })],
 	})
 
+	const connect = useCallback(
+		async (app: Canvas) => {
+			try {
+				const res = await fetch(`${apiRoot}/topic/${topic}`)
+				const { addrs }: { addrs: string[] } = await res.json()
+				await app.libp2p.dial(addrs.map((addr) => multiaddr(addr)))
+			} catch (err) {
+				console.error(err)
+			}
+		},
+		[app],
+	)
+
 	useEffect(() => {
 		if (app === undefined) return
 
@@ -49,13 +64,18 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 			setPeers((peers) => peers.filter((peer) => peer !== connection.remotePeer.toString())),
 		)
 
-		Promise.resolve(app.libp2p.start()).then(
-			() =>
-				fetch(`${apiRoot}/topic/${app.topic}`)
-					.then((res) => res.json())
-					.then(({ addrs }: { addrs: string[] }) => app.libp2p.dial(addrs.map((addr) => multiaddr(addr)))),
-			(err) => console.error(err),
-		)
+		Promise.resolve(app.libp2p.start()).then(() => {
+			connect(app)
+
+			const interval = setInterval(() => {
+				const peers = app.libp2p.getPeers()
+				if (peers.length === 0) {
+					connect(app)
+				}
+			}, 5000)
+
+			app.libp2p.addEventListener("stop", () => clearInterval(interval), { once: true })
+		})
 	}, [app])
 
 	const messages = useLiveQuery<Message>(app, "message", {
