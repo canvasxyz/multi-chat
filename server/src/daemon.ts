@@ -14,8 +14,6 @@ import client from "prom-client"
 
 import { Canvas, Contract } from "@canvas-js/core"
 import { createAPI } from "@canvas-js/core/api"
-import { DelayableController } from "./DelayableController.js"
-import { minute } from "./utils.js"
 
 const { FLY_APP_NAME, START_PORT = "9000", END_PORT = "9999", CANVAS_HOME = "./data" } = process.env
 const [startPort, endPort] = [parseInt(START_PORT), parseInt(END_PORT)]
@@ -26,10 +24,22 @@ if (!fs.existsSync(path.resolve(CANVAS_HOME))) {
 }
 
 export class Daemon {
+	private sleepTimer: ReturnType<typeof setInterval>
+	private sleepTimeout: number
+
 	public readonly api = express()
 	public readonly server: http.Server & stoppable.WithStop
 	public readonly portMap = new Map<number, string>()
-	public readonly apps = new Map<string, { port: number; app: Canvas; api: express.Express }>()
+	public readonly apps = new Map<
+		string,
+		{
+			port: number
+			app: Canvas
+			api: express.Express
+			lastActive: number
+			lastActiveTimer: ReturnType<typeof setInterval>
+		}
+	>()
 
 	public readonly queue: PQueue = new PQueue({ concurrency: 1 })
 
@@ -40,6 +50,9 @@ export class Daemon {
 	public constructor(
 		private readonly port: number,
 		contract: Contract,
+		config: {
+			sleepTimeout: number
+		},
 	) {
 		this.api.use(express.json())
 		this.api.use(express.text())
@@ -89,6 +102,8 @@ export class Daemon {
 
 		this.server.listen(this.port, () => {
 			console.log(`[multi-chat-server] listening on http://127.0.0.1:${this.port}/`)
+			console.log(`[multi-chat-server] to start an app: http://127.0.0.1:${this.port}/topic/hello-world`)
+			console.log(`[multi-chat-server] apps will sleep after ${this.sleepTimeout / 1000} seconds of inactivity`)
 		})
 
 		if (FLY_APP_NAME !== undefined) {
@@ -97,6 +112,25 @@ export class Daemon {
 				(err) => console.error(err),
 			)
 		}
+
+		this.sleepTimer = setInterval(() => {
+			this.checkSleepTimeouts()
+		}, 1000)
+		this.sleepTimeout = config.sleepTimeout
+	}
+
+	private checkSleepTimeouts() {
+		if (!this.sleepTimeout) {
+			return
+		}
+		this.apps.forEach(({ app, lastActive }) => {
+			const currentTime = new Date().getTime()
+			console.log(currentTime, lastActive, this.sleepTimeout)
+			if (currentTime - lastActive > this.sleepTimeout) {
+				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
+				this.stop(app.topic)
+			}
+		})
 	}
 
 	public async start(topic: string, contract: Contract): Promise<Canvas> {
@@ -121,12 +155,32 @@ export class Daemon {
 				listen: this.getListenAddrs(port),
 				announce: this.getAnnounceAddrs(port),
 			})
+			let peers: string[] = []
 
-			console.log(`[multi-chat-server] Started ${topic}`)
+			console.log(`[multi-chat-server] started ${topic}`)
 
 			const api = createAPI(app, { exposeMessages: true })
 
-			this.apps.set(topic, { port, app: app, api })
+			app.libp2p.addEventListener("connection:open", ({ detail: connection }) => {
+				peers = Array.from(new Set([...peers, connection.remotePeer.toString()]))
+			})
+
+			app.libp2p.addEventListener("connection:close", ({ detail: connection }) => {
+				peers = peers.filter((peer: string) => peer !== connection.remotePeer.toString())
+			})
+
+			const status = {
+				port,
+				app,
+				api,
+				lastActive: new Date().getTime(),
+				lastActiveTimer: setInterval(() => {
+					if (peers.length > 0) {
+						status.lastActive = new Date().getTime()
+					}
+				}, 1000),
+			}
+			this.apps.set(topic, status)
 			this.portMap.set(port, topic)
 			return app
 		})
@@ -140,6 +194,8 @@ export class Daemon {
 			assert(app !== undefined, "app not found")
 
 			await app.app.stop()
+			clearInterval(app.lastActiveTimer)
+
 			this.apps.delete(topic)
 			this.portMap.delete(app.port)
 			console.log(`[multi-chat-server] Stopped ${topic}`)
@@ -150,6 +206,7 @@ export class Daemon {
 		console.log("[multi-chat-server] Waiting for queue to clear")
 		await this.queue.onIdle()
 		console.log("[multi-chat-server] Stopping running apps")
+		clearInterval(this.sleepTimer)
 		await Promise.all([...this.apps.values()].map(({ app: core }) => core.stop()))
 		console.log("[multi-chat-server] Stopping Daemon API server")
 		await new Promise<void>((resolve, reject) => this.server.stop((err) => (err ? reject(err) : resolve())))

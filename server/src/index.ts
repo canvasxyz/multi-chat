@@ -1,7 +1,7 @@
 import { ProxyServer } from "./proxy.js"
 import { Daemon } from "./daemon.js"
 
-const { PORT = "3000", PROXY_PORT, FLY_APP_NAME } = process.env
+const { PORT = "3000", PROXY_PORT, FLY_APP_NAME, TIMEOUT } = process.env
 
 const controller = new AbortController()
 let stopping = false
@@ -15,21 +15,27 @@ process.on("SIGINT", async () => {
 	}
 })
 
-const daemon = new Daemon(parseInt(PORT), {
-	models: {
-		message: {
-			id: "primary",
-			content: "string",
-			address: "string",
-			timestamp: "integer",
+const daemon = new Daemon(
+	parseInt(PORT),
+	{
+		models: {
+			message: {
+				id: "primary",
+				content: "string",
+				address: "string",
+				timestamp: "integer",
+			},
+		},
+		actions: {
+			createMessage: (db, { content }, { id, address, timestamp }) => {
+				db.set("message", { id, content, address, timestamp })
+			},
 		},
 	},
-	actions: {
-		createMessage: (db, { content }, { id, address, timestamp }) => {
-			db.set("message", { id, content, address, timestamp })
-		},
+	{
+		sleepTimeout: TIMEOUT ? parseInt(TIMEOUT) : 15 * 1000,
 	},
-})
+)
 
 controller.signal.addEventListener("abort", () => daemon.close())
 
