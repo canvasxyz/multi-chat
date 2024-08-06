@@ -54,5 +54,5 @@ const updateFinishedMatches = async () => {
 		daemon.ban(match)
 	}
 }
-updateFinishedMatches()
+setTimeout(() => updateFinishedMatches(), 0)
 setInterval(updateFinishedMatches, 60 * 1000)
