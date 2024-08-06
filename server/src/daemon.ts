@@ -41,6 +41,8 @@ export class Daemon {
 		}
 	>()
 
+	public bannedTopics: string[]
+
 	public readonly queue: PQueue = new PQueue({ concurrency: 1 })
 
 	public privateAddress: string | undefined
@@ -52,6 +54,7 @@ export class Daemon {
 		contract: Contract,
 		config: {
 			sleepTimeout: number
+			bannedTopics?: string[]
 		},
 	) {
 		this.api.use(express.json())
@@ -117,20 +120,8 @@ export class Daemon {
 			this.checkSleepTimeouts()
 		}, 1000)
 		this.sleepTimeout = config.sleepTimeout
-	}
 
-	private checkSleepTimeouts() {
-		if (!this.sleepTimeout) {
-			return
-		}
-		this.apps.forEach(({ app, lastActive }) => {
-			const currentTime = new Date().getTime()
-			console.log(currentTime, lastActive, this.sleepTimeout)
-			if (currentTime - lastActive > this.sleepTimeout) {
-				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
-				this.stop(app.topic)
-			}
-		})
+		this.bannedTopics = config.bannedTopics ?? []
 	}
 
 	public async start(topic: string, contract: Contract): Promise<Canvas> {
@@ -138,6 +129,11 @@ export class Daemon {
 			if (this.apps.has(topic)) {
 				const { app } = this.apps.get(topic)!
 				return app
+			}
+
+			if (this.bannedTopics.includes(topic)) {
+				console.log(`[multi-chat-server] failed to start banned ${topic}`)
+				throw new Error("banned topic")
 			}
 
 			const port = this.allocatePort()
@@ -202,6 +198,12 @@ export class Daemon {
 		})
 	}
 
+	public async ban(topic: string) {
+		if (this.bannedTopics.includes(topic)) return
+		this.bannedTopics.push(topic)
+		await this.stop(topic)
+	}
+
 	public async close() {
 		console.log("[multi-chat-server] Waiting for queue to clear")
 		await this.queue.onIdle()
@@ -258,5 +260,19 @@ export class Daemon {
 		}
 
 		return announce
+	}
+
+	private checkSleepTimeouts() {
+		if (!this.sleepTimeout) {
+			return
+		}
+		this.apps.forEach(({ app, lastActive }) => {
+			const currentTime = new Date().getTime()
+			console.log(currentTime, lastActive, this.sleepTimeout)
+			if (currentTime - lastActive > this.sleepTimeout) {
+				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
+				this.stop(app.topic)
+			}
+		})
 	}
 }
