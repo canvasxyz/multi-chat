@@ -12,7 +12,8 @@
 	},
 	"workspaces": [
 		"./client",
-		"./server"
+		"./server",
+		"./load-test"
 	],
 	"devDependencies": {
 		"@vitejs/plugin-react": "^4.3.1",

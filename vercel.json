@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm build",
+  "buildCommand": "npm run build && npm run client:build",
   "framework": null,
   "installCommand": "npm install",
-  "outputDirectory": "dist"
+  "outputDirectory": "client/dist"
 }

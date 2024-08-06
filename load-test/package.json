@@ -1,6 +1,6 @@
 {
   "name": "@canvas-js/multi-chat-load-test",
-"private": true,
+  "private": true,
   "type": "module",
   "scripts": {
     "bundle:build": "npx webpack --config webpack.config.js",
