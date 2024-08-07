@@ -51,6 +51,7 @@ const updateFinishedMatches = async () => {
 		const request = await fetch("http://skystrife-indexer.internal:8000")
 		const json = await request.json()
 		const finishedMatches = json.finishedMatches as string[]
+		console.log("[multi-chat-server] got finished sky strife matches:", finishedMatches)
 		for (const match of finishedMatches) {
 			daemon.ban(match)
 		}
