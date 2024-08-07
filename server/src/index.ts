@@ -47,11 +47,15 @@ if (FLY_APP_NAME !== undefined && PROXY_PORT !== undefined) {
 
 // sky strife: check the sky strife indexer for finished games, and ban them
 const updateFinishedMatches = async () => {
-	const request = await fetch("http://skystrife-indexer.internal:8000")
-	const json = await request.json()
-	const finishedMatches = json.finishedMatches as string[]
-	for (const match of finishedMatches) {
-		daemon.ban(match)
+	try {
+		const request = await fetch("http://skystrife-indexer.internal:8000")
+		const json = await request.json()
+		const finishedMatches = json.finishedMatches as string[]
+		for (const match of finishedMatches) {
+			daemon.ban(match)
+		}
+	} catch (err) {
+		console.log("[multi-chat-server] could not reach sky strife indexer")
 	}
 }
 setTimeout(() => updateFinishedMatches(), 0)
