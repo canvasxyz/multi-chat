@@ -9,8 +9,8 @@ import { SIWESignerViem } from "@canvas-js/chain-ethereum-viem"
 
 import { Message } from "./Chat.js"
 
-// const apiRoot = "http://127.0.0.1:3000"
-const apiRoot = "https://canvas-multi-chat-server.fly.dev"
+const apiRoot =
+	process.env.NODE_ENV === "development" ? "http://127.0.0.1:3000" : "https://canvas-multi-chat-server.fly.dev"
 
 export const ChatInstance = ({ topic, left, account }: { topic: string; left: number; account: PrivateKeyAccount }) => {
 	const [peers, setPeers] = useState<string[]>([])
