@@ -36,6 +36,8 @@ export class Daemon {
 			port: number
 			app: Canvas
 			api: express.Express
+			lastMessages: number
+			newMessages: number
 			lastActive: number
 			lastActiveTimer: ReturnType<typeof setInterval>
 		}
@@ -170,10 +172,15 @@ export class Daemon {
 				app,
 				api,
 				lastActive: new Date().getTime(),
-				lastActiveTimer: setInterval(() => {
+				lastMessages: (await app.messageLog.getMessages()).length,
+				newMessages: 0,
+				lastActiveTimer: setInterval(async () => {
 					if (peers.length > 0) {
 						status.lastActive = new Date().getTime()
 					}
+					const messageCount = (await app.messageLog.getMessages()).length
+					status.newMessages = messageCount - status.lastMessages
+					status.lastMessages = messageCount
 				}, 1000),
 			}
 			this.apps.set(topic, status)
@@ -266,9 +273,10 @@ export class Daemon {
 		if (!this.sleepTimeout) {
 			return
 		}
-		this.apps.forEach(({ app, lastActive }) => {
+		console.log("---")
+		this.apps.forEach(({ app, lastActive, lastMessages, newMessages }) => {
 			const currentTime = new Date().getTime()
-			console.log(currentTime, lastActive, this.sleepTimeout)
+			console.log(app.topic, lastMessages, newMessages)
 			if (currentTime - lastActive > this.sleepTimeout) {
 				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
 				this.stop(app.topic)

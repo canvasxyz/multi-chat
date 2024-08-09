@@ -96,7 +96,7 @@ const loadTest = async () => {
 
 	let elapsed = 0
 	setInterval(async () => {
-		log(`${elapsed++} seconds elapsed, active: ${sending}`)
+		log(`${elapsed++} seconds elapsed`)
 
 		for (let i = 0; i < numTopics; i++) {
 			const online = peers[i].length > 0 ? "🟢" : "🔴"
@@ -105,6 +105,7 @@ const loadTest = async () => {
 			const [clock] = await apps[i].messageLog.getClock()
 			log(`${online} ${topic}: ${msgs} messages, ${clock} clock`)
 		}
+		log(`active: ${sending}`)
 
 		if (elapsed % (cycleUp + cycleDown) <= cycleUp) {
 			sending = true
