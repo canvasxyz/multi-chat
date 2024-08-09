@@ -54,15 +54,29 @@ const loadTest = async () => {
 				peers[i] = peers[i].filter((peer: string) => peer !== connection.remotePeer.toString())
 			})
 
+			const connect = async (app: Canvas) => {
+				try {
+					const res = await fetch(`${apiRoot}/topic/${topic}`)
+					const { addrs }: { addrs: string[] } = await res.json()
+					await app.libp2p.dial(addrs.map((addr) => _multiaddr(addr)))
+				} catch (err) {
+					console.error(err)
+				}
+			}
+
 			Promise.resolve(app.libp2p.start())
-				.then(
-					() =>
-						fetch(`${apiRoot}/topic/${topic}`)
-							.then((res) => res.json())
-							.then(({ addrs }: { addrs: string[] }) => app.libp2p.dial(addrs.map((addr) => _multiaddr(addr))))
-							.then(() => log("app started: " + topic)),
-					(err) => log(err.stack),
-				)
+				.then(() => {
+					connect(app)
+
+					const interval = setInterval(() => {
+						const peers = app.libp2p.getPeers()
+						if (peers.length === 0) {
+							connect(app)
+						}
+					}, 5000)
+
+					app.libp2p.addEventListener("stop", () => clearInterval(interval), { once: true })
+				})
 				.catch((err) => {
 					log(err.stack)
 				})
@@ -119,18 +133,23 @@ const runner = async () => {
 
 	await page.setRequestInterception(true)
 	page.on("request", async (request) => {
-		if (request.method() === "GET") {
-			const response = await fetch(request.url())
-			const body = await response.arrayBuffer()
-			const bodyString = new TextDecoder().decode(body)
-			request.respond({
-				status: response.status,
-				contentType: response.headers.get("Content-Type") ?? "text/html",
-				body: bodyString,
-			})
-		} else {
+		try {
+			if (request.method() === "GET") {
+				const response = await fetch(request.url()).catch(() => {})
+				if (!response) return
+				const body = await response.arrayBuffer()
+				const bodyString = new TextDecoder().decode(body)
+				request.respond({
+					status: response.status,
+					contentType: response.headers.get("Content-Type") ?? "text/html",
+					body: bodyString,
+				})
+			} else {
+				throw new Error("unhandled request method")
+			}
+		} catch (err) {
 			request.abort()
-			throw new Error("unhandled request method")
+			console.log("fetch failed")
 		}
 	})
 
