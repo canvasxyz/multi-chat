@@ -155,7 +155,7 @@ export class Daemon {
 			})
 			let peers: string[] = []
 
-			console.log(`[multi-chat-server] started ${topic}`)
+			console.log(`[multi-chat-server] started ${topic} on ${app.libp2p.getMultiaddrs()}`)
 
 			const api = createAPI(app, { exposeMessages: true })
 
