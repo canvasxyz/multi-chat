@@ -87,7 +87,7 @@ export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 				/>
 			</div>
 			{new Array(...Array(20)).map((unused, index) => {
-				const numOnline = onlinePeers[`canvas/${prefix}-${index + 1}.canvas.xyz`]?.length
+				const numOnline = onlinePeers[`canvas/${prefix}-${index}.canvas.xyz`]?.length
 				return (
 					<div key={index}>
 						<button
@@ -96,12 +96,12 @@ export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 								margin: "10px 12px 0",
 							}}
 							onClick={() => {
-								const room = `${prefix}-${index + 1}.canvas.xyz`
+								const room = `${prefix}-${index}.canvas.xyz`
 								if (rooms.indexOf(room) !== -1) return
 								setRooms([...rooms, room])
 							}}
 						>
-							Join room {index + 1} {numOnline && `(${numOnline} here)`}
+							Join room {index} {numOnline && `(${numOnline} here)`}
 						</button>
 					</div>
 				)
