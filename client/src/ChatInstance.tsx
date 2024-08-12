@@ -12,8 +12,19 @@ import { Message } from "./Chat.js"
 const apiRoot =
 	process.env.NODE_ENV === "development" ? "http://127.0.0.1:3000" : "https://canvas-multi-chat-server.fly.dev"
 
-export const ChatInstance = ({ topic, left, account }: { topic: string; left: number; account: PrivateKeyAccount }) => {
+export const ChatInstance = ({
+	topic,
+	left,
+	account,
+	automessage,
+}: {
+	topic: string
+	left: number
+	account: PrivateKeyAccount
+	automessage: boolean
+}) => {
 	const [peers, setPeers] = useState<string[]>([])
+	const [messageCount, setMessageCount] = useState<number>(0)
 
 	const [chatOpen, setChatOpen] = useState(true)
 	const scrollboxRef = useRef<HTMLDivElement>(null)
@@ -39,6 +50,17 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 		},
 		signers: [new SIWESignerViem({ signer: account })],
 	})
+
+	useEffect(() => {
+		if (!app) return
+		const timer = setInterval(async () => {
+			if (automessage) {
+				app.actions.createMessage({ content: "." })
+			}
+			setMessageCount(await app.db.count("message"))
+		}, 1000)
+		return () => clearInterval(timer)
+	}, [app, automessage])
 
 	const connect = useCallback(
 		async (app: Canvas) => {
@@ -180,7 +202,10 @@ export const ChatInstance = ({ topic, left, account }: { topic: string; left: nu
 			</div> */}
 			{/* <div style={{ padding: 10, paddingTop: 0 }}>{peersByTopic[`canvas/${topic}`]?.length || 0} other browsers</div> */}
 			<div style={{ padding: 10 }}>
-				{topic} ({peers.length} {peers.length === 1 ? "connection" : "connections"})
+				{topic}
+				<br />
+				{peers.length} {peers.length === 1 ? "peer" : "peers"}, {messageCount}{" "}
+				{messageCount === 1 ? "message" : "messages"}
 			</div>
 			{chatOpen && (
 				<div>

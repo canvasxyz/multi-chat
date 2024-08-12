@@ -15,6 +15,7 @@ type PeerId = any // TODO
 export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 	const [rooms, setRooms] = useState<string[]>([])
 	const [prefix, setPrefix] = useState("room")
+	const [automessage, setAutomessage] = useState(true)
 
 	const [onlinePeers, setOnlinePeers] = useState<Record<string, PeerId>>({})
 
@@ -45,37 +46,52 @@ export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 
 	return (
 		<>
-			<input
-				type="text"
-				placeholder="prefix"
-				value={prefix}
-				onChange={(e) => {
-					setPrefix(e.target.value)
-				}}
-				style={{ position: "fixed", top: 20, right: 130 }}
-			/>
+			<div style={{ position: "fixed", top: 20, right: 30 }}>
+				Prefix:{" "}
+				<input
+					type="text"
+					placeholder="prefix"
+					value={prefix}
+					onChange={(e) => {
+						setPrefix(e.target.value)
+					}}
+				/>
+			</div>
+			<div style={{ position: "fixed", top: 50, right: 30 }}>
+				<label>
+					Auto message:{" "}
+					<input
+						type="checkbox"
+						checked={automessage}
+						onChange={(e) => {
+							setAutomessage(!automessage)
+						}}
+						style={{ position: "relative", top: 2 }}
+					/>
+				</label>
+			</div>
 			{new Array(...Array(20)).map((unused, index) => {
-				const numOnline = onlinePeers[`canvas/${prefix}-${index + 1}.xyz`]?.length
+				const numOnline = onlinePeers[`canvas/${prefix}-${index + 1}.canvas.xyz`]?.length
 				return (
-					<button
-						key={index}
-						style={{
-							position: "fixed",
-							top: 20 + index * 35,
-							right: 20,
-						}}
-						onClick={() => {
-							const room = `${prefix}-${index + 1}.xyz`
-							if (rooms.indexOf(room) !== -1) return
-							setRooms([...rooms, room])
-						}}
-					>
-						Join room {index + 1} {numOnline && `(${numOnline} here)`}
-					</button>
+					<div key={index}>
+						<button
+							key={index}
+							style={{
+								margin: "10px 12px 0",
+							}}
+							onClick={() => {
+								const room = `${prefix}-${index + 1}.canvas.xyz`
+								if (rooms.indexOf(room) !== -1) return
+								setRooms([...rooms, room])
+							}}
+						>
+							Join room {index + 1} {numOnline && `(${numOnline} here)`}
+						</button>
+					</div>
 				)
 			})}
 			{rooms.map((room, index) => (
-				<ChatInstance key={room} topic={room} left={30 + index * 300} account={account} />
+				<ChatInstance key={room} topic={room} left={30 + index * 300} account={account} automessage={automessage} />
 			))}
 		</>
 	)
