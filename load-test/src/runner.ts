@@ -1,4 +1,5 @@
 import fs from "node:fs"
+import process from "process"
 import puppeteer from "puppeteer"
 
 import { Canvas } from "@canvas-js/core"
@@ -169,7 +170,9 @@ const runner = async () => {
 
 	await page.exposeFunction("log", (...args: any[]) => console.log(...args))
 
-	// await page.evaluate('localStorage.setItem("debug", "canvas:*")')
+	if (process.env.CLIENT_DEBUG && typeof process.env.CLIENT_DEBUG === "string") {
+		await page.evaluate(`localStorage.setItem("debug", ${JSON.stringify(process.env.CLIENT_DEBUG)})`)
+	}
 
 	await page.evaluate(bundle)
 	await page.evaluate(loadTest)
