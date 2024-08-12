@@ -25,6 +25,7 @@ export const ChatInstance = ({
 }) => {
 	const [peers, setPeers] = useState<string[]>([])
 	const [messageCount, setMessageCount] = useState<number>(0)
+	const [clock, setClock] = useState<number>(0)
 
 	const [chatOpen, setChatOpen] = useState(true)
 	const scrollboxRef = useRef<HTMLDivElement>(null)
@@ -54,10 +55,11 @@ export const ChatInstance = ({
 	useEffect(() => {
 		if (!app) return
 		const timer = setInterval(async () => {
-			if (automessage) {
+			if (automessage && app.libp2p.getPeers().length !== 0) {
 				app.actions.createMessage({ content: "." })
 			}
 			setMessageCount(await app.db.count("message"))
+			setClock((await app.messageLog.getClock())[0])
 		}, 1000)
 		return () => clearInterval(timer)
 	}, [app, automessage])
@@ -205,7 +207,7 @@ export const ChatInstance = ({
 				{topic}
 				<br />
 				{peers.length} {peers.length === 1 ? "peer" : "peers"}, {messageCount}{" "}
-				{messageCount === 1 ? "message" : "messages"}
+				{messageCount === 1 ? "message" : "messages"} [{clock} clock]
 			</div>
 			{chatOpen && (
 				<div>

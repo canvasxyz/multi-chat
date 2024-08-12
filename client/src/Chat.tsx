@@ -70,6 +70,22 @@ export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 					/>
 				</label>
 			</div>
+			<div style={{ position: "fixed", top: 80, right: 30 }}>
+				<input
+					type="button"
+					value="Clear data"
+					onClick={async (e) => {
+						// clear all indexeddb and localstorage
+						window.localStorage.clear()
+						const dbs = await window.indexedDB.databases()
+						dbs.forEach((db) => {
+							if (db.name === undefined) return
+							window.indexedDB.deleteDatabase(db.name)
+						})
+						location.reload()
+					}}
+				/>
+			</div>
 			{new Array(...Array(20)).map((unused, index) => {
 				const numOnline = onlinePeers[`canvas/${prefix}-${index + 1}.canvas.xyz`]?.length
 				return (
