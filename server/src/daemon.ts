@@ -276,7 +276,7 @@ export class Daemon {
 		console.log("---")
 		this.apps.forEach(({ app, lastActive, lastMessages, newMessages }) => {
 			const currentTime = new Date().getTime()
-			console.log(app.topic, lastMessages, newMessages)
+			console.log(`${app.topic}: ${lastMessages} msgs, +${newMessages} msgs/sec`)
 			if (currentTime - lastActive > this.sleepTimeout) {
 				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
 				this.stop(app.topic)

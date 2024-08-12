@@ -27,6 +27,7 @@ const loadTest = async () => {
 	 */
 	const peers: Record<string, string[]> = {}
 	const apps: Record<string, Canvas> = {}
+	const messages: Record<string, number> = {}
 
 	for (let i = 0; i < numTopics; i++) {
 		try {
@@ -102,8 +103,10 @@ const loadTest = async () => {
 			const online = peers[i].length > 0 ? "🟢" : "🔴"
 			const topic = `room-${i}.canvas.xyz`
 			const msgs = await apps[i].messageLog.db.count("$messages")
+			const lastMsgs = messages[i]
+			messages[i] = msgs
 			const [clock] = await apps[i].messageLog.getClock()
-			log(`${online} ${topic}: ${msgs} messages, ${clock} clock`)
+			log(`${online} ${topic}: ${msgs} messages, ${msgs - lastMsgs} msgs/sec [${clock} clock]`)
 		}
 		log(`active: ${sending}`)
 
