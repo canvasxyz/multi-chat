@@ -15,7 +15,7 @@ type PeerId = any // TODO
 export const Chat = ({ account }: { account: PrivateKeyAccount }) => {
 	const [rooms, setRooms] = useState<string[]>([])
 	const [prefix, setPrefix] = useState("room")
-	const [automessage, setAutomessage] = useState(true)
+	const [automessage, setAutomessage] = useState(false)
 
 	const [onlinePeers, setOnlinePeers] = useState<Record<string, PeerId>>({})
 
