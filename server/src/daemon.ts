@@ -172,13 +172,13 @@ export class Daemon {
 				port,
 				app,
 				api,
-				lastActive: new Date().getTime(),
+				lastActive: Date.now(),
 				lastClock: (await app.messageLog.getClock())[0],
 				lastMessages: (await app.messageLog.getMessages()).length,
 				newMessages: 0,
 				lastActiveTimer: setInterval(async () => {
 					if (peers.length > 0) {
-						status.lastActive = new Date().getTime()
+						status.lastActive = Date.now()
 					}
 					const messageCount = (await app.messageLog.getMessages()).length
 					const [clock] = await app.messageLog.getClock()
@@ -275,12 +275,12 @@ export class Daemon {
 	}
 
 	private checkSleepTimeouts() {
-		if (!this.sleepTimeout) {
+		if (!this.sleepTimeout || this.apps.size === 0) {
 			return
 		}
 		console.log("---")
 		this.apps.forEach(({ app, lastActive, lastMessages, lastClock, newMessages }) => {
-			const currentTime = new Date().getTime()
+			const currentTime = Date.now()
 			console.log(`${app.topic}: ${lastMessages} msgs, +${newMessages} msgs/sec [${lastClock} clock]`)
 			if (currentTime - lastActive > this.sleepTimeout) {
 				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
