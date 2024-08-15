@@ -53,8 +53,8 @@ export class Daemon {
 	#lastAllocatedPort = NaN
 
 	public constructor(
-		private readonly port: number,
-		contract: Contract,
+		public readonly port: number,
+		public readonly contract: Contract,
 		config: {
 			sleepTimeout: number
 			bannedTopics?: string[]
@@ -67,7 +67,7 @@ export class Daemon {
 		this.api.get("/topic/:topic", (req, res) => {
 			const { app } = this.apps.get(req.params.topic) ?? {}
 			if (app === undefined) {
-				this.start(req.params.topic, contract).then(
+				this.start(req.params.topic).then(
 					(app) => {
 						// const controller = new DelayableController(30 * minute)
 						res.json({ topic: app.topic, addrs: app.libp2p.getMultiaddrs().map((addr) => addr.toString()) })
@@ -127,7 +127,7 @@ export class Daemon {
 		this.bannedTopics = config.bannedTopics ?? []
 	}
 
-	public async start(topic: string, contract: Contract): Promise<Canvas> {
+	public async start(topic: string): Promise<Canvas> {
 		const app = await this.queue.add(async () => {
 			if (this.apps.has(topic)) {
 				const { app } = this.apps.get(topic)!
@@ -149,7 +149,7 @@ export class Daemon {
 			const app = await Canvas.initialize({
 				start: true,
 				topic: topic,
-				contract,
+				contract: this.contract,
 				path: directory,
 				listen: this.getListenAddrs(port),
 				announce: this.getAnnounceAddrs(port),
@@ -174,13 +174,14 @@ export class Daemon {
 				api,
 				lastActive: Date.now(),
 				lastClock: (await app.messageLog.getClock())[0],
-				lastMessages: (await app.messageLog.getMessages()).length,
+				lastMessages: await app.messageLog.db.count("$messages"),
 				newMessages: 0,
 				lastActiveTimer: setInterval(async () => {
 					if (peers.length > 0) {
 						status.lastActive = Date.now()
 					}
-					const messageCount = (await app.messageLog.getMessages()).length
+
+					const messageCount = await app.messageLog.db.count("$messages")
 					const [clock] = await app.messageLog.getClock()
 
 					status.newMessages = messageCount - status.lastMessages

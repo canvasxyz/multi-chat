@@ -58,8 +58,11 @@ export const ChatInstance = ({
 			if (automessage && app.libp2p.getPeers().length !== 0) {
 				app.actions.createMessage({ content: "." })
 			}
-			setMessageCount(await app.db.count("message"))
-			setClock((await app.messageLog.getClock())[0])
+
+			const messageCount = await app.messageLog.db.count("$messages")
+			const [clock] = await app.messageLog.getClock()
+			setMessageCount(messageCount)
+			setClock(clock)
 		}, 1000)
 		return () => clearInterval(timer)
 	}, [app, automessage])

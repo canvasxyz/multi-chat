@@ -1,3 +1,5 @@
+import crypto from "node:crypto"
+
 import { ProxyServer } from "./proxy.js"
 import { Daemon } from "./daemon.js"
 
@@ -36,6 +38,15 @@ const daemon = new Daemon(
 		sleepTimeout: TIMEOUT ? parseInt(TIMEOUT) : 15 * 1000,
 	},
 )
+
+{
+	const app = await daemon.start("room-0.canvas.xyz")
+	console.log("initializing room-0.canvas.xyz")
+	for (let i = 0; i < 1000; i++) {
+		await app.actions.createMessage({ content: crypto.pseudoRandomBytes(8).toString("hex") })
+	}
+	console.log("done initializing room-0.canvas.xyz")
+}
 
 controller.signal.addEventListener("abort", () => daemon.close())
 
