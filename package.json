@@ -4,6 +4,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
+		"clean": "npm run clean -w @canvas-js/multi-chat-load-test -w @canvas-js/multi-chat-client -w @canvas-js/multi-chat-server",
 		"dev": "tsc --build --watch",
 		"server:start": "node server/lib/index.js",
     "client:dev": "cd client && vite dev",

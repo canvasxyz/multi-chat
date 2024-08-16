@@ -3,6 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"clean": "rm -rf tsconfig.tsbuildinfo lib/*",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview"

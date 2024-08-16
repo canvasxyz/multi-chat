@@ -5,7 +5,7 @@
   "scripts": {
     "bundle:build": "npx webpack --config webpack.config.js",
     "bundle:watch": "npx webpack --config webpack.config.js --watch",
-    "clean": "rm lib/*",
+    "clean": "rm -rf tsconfig.tsbuildinfo lib/*",
     "start": "node lib/runner.js"
   },
   "dependencies": {
