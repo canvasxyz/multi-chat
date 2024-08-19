@@ -289,7 +289,14 @@ export class Daemon {
 		}
 
 		const apps = Array.from(this.apps.entries())
-		apps.sort(([topicA], [topicB]) => topicA.localeCompare(topicB))
+		apps.sort(([topicA], [topicB]) => {
+			const order = parseInt(topicA.replace("room-", "")) - parseInt(topicB.replace("room-", ""))
+			if (isNaN(order)) {
+				return topicA.localeCompare(topicB)
+			} else {
+				return order
+			}
+		})
 		for (const [topic, { app, lastActive, lastMessages, lastClock, newMessages, peers }] of apps) {
 			const currentTime = Date.now()
 			const online = peers.length > 0 ? "🟢" : "🔴"

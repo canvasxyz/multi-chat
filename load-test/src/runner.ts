@@ -187,7 +187,7 @@ const runner = async () => {
 		],
 	})
 
-	const roomIds = Array.from(Array(10).keys())
+	const roomIds = Array.from(Array(numTopics).keys())
 	const roomTopics = roomIds.map((i) => `room-${i}.canvas.xyz`)
 	const rooms: Room[] = await Promise.all(
 		roomTopics.map(async (topic) => {
