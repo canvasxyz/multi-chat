@@ -39,13 +39,14 @@ const daemon = new Daemon(
 	},
 )
 
-{
-	const app = await daemon.start("room-0.canvas.xyz")
-	console.log("initializing room-0.canvas.xyz")
-	for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 10; i++) {
+	const topic = `room-${i}.canvas.xyz`
+	const app = await daemon.start(topic)
+	console.log(`initializing ${topic}`)
+	for (let i = 0; i < 200; i++) {
 		await app.actions.createMessage({ content: crypto.pseudoRandomBytes(8).toString("hex") })
 	}
-	console.log("done initializing room-0.canvas.xyz")
+	console.log(`done initializing ${topic}`)
 }
 
 controller.signal.addEventListener("abort", () => daemon.close())
