@@ -94,7 +94,10 @@ const loadTest = async () => {
 
 		let j = 0
 		setInterval(async () => {
-			await app.actions.createMessage({ content: (j++).toString() })
+			// send messages if online
+			if (peers.length > 0) {
+				await app.actions.createMessage({ content: (j++).toString() })
+			}
 
 			// pass stats up through puppeteer
 			const messages = await app.messageLog.db.count("$messages")
