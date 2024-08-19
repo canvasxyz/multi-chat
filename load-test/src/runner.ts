@@ -119,23 +119,7 @@ const loadTest = async () => {
 	}, 1000)
 }
 
-const runner = async () => {
-	console.log(`starting load test with ${numTopics} clients`)
-	console.log(`cycling up ${cycleUp} sec, down ${cycleDown} sec`)
-
-	const bundle = fs.readFileSync("./lib/bundle-compiled.js", { encoding: "utf8" })
-	const browser = await puppeteer.launch({
-		dumpio: true,
-		headless: true,
-		args: [
-			"--no-sandbox",
-			"--disable-setuid-sandbox",
-			"--disable-extensions",
-			"--enable-chrome-browser-cloud-management",
-		],
-	})
-	const page = await browser.newPage()
-
+const setupPage = async (page: puppeteer.Page, bundle: string) => {
 	await page.setRequestInterception(true)
 	page.on("request", async (request) => {
 		try {
@@ -175,7 +159,30 @@ const runner = async () => {
 	}
 
 	await page.evaluate(bundle)
-	await page.evaluate(loadTest)
+
+	return async () => {
+		await page.evaluate(loadTest)
+	}
+}
+
+const runner = async () => {
+	console.log(`starting load test with ${numTopics} clients`)
+	console.log(`cycling up ${cycleUp} sec, down ${cycleDown} sec`)
+
+	const bundle = fs.readFileSync("./lib/bundle-compiled.js", { encoding: "utf8" })
+	const browser = await puppeteer.launch({
+		dumpio: true,
+		headless: true,
+		args: [
+			"--no-sandbox",
+			"--disable-setuid-sandbox",
+			"--disable-extensions",
+			"--enable-chrome-browser-cloud-management",
+		],
+	})
+	const page = await browser.newPage()
+	const start = await setupPage(page, bundle)
+	await start()
 }
 
 runner()
