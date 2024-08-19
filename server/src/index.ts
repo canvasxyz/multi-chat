@@ -3,7 +3,7 @@ import crypto from "node:crypto"
 import { ProxyServer } from "./proxy.js"
 import { Daemon } from "./daemon.js"
 
-const { PORT = "3000", PROXY_PORT, FLY_APP_NAME, TIMEOUT } = process.env
+const { PORT = "3000", PROXY_PORT, FLY_APP_NAME, TIMEOUT, NUM_TOPICS } = process.env
 
 const controller = new AbortController()
 let stopping = false
@@ -35,19 +35,21 @@ const daemon = new Daemon(
 		},
 	},
 	{
-		sleepTimeout: TIMEOUT ? parseInt(TIMEOUT) : 15 * 1000,
+		sleepTimeout: TIMEOUT ? parseInt(TIMEOUT) : 30 * 1000,
 	},
 )
 
-for (let i = 0; i < 10; i++) {
-	const topic = `room-${i}.canvas.xyz`
-	const app = await daemon.start(topic)
-	console.log(`initializing ${topic}`)
-	for (let i = 0; i < 200; i++) {
-		await app.actions.createMessage({ content: crypto.pseudoRandomBytes(8).toString("hex") })
-	}
-	console.log(`done initializing ${topic}`)
-}
+await Promise.all(
+	Array.from(Array(NUM_TOPICS ? parseInt(NUM_TOPICS, 10) : 10).keys()).map(async (i) => {
+		const topic = `room-${i}.canvas.xyz`
+		const app = await daemon.start(topic)
+		console.log(`initializing ${topic}`)
+		for (let i = 0; i < 200; i++) {
+			await app.actions.createMessage({ content: crypto.pseudoRandomBytes(8).toString("hex") })
+		}
+		console.log(`done initializing ${topic}`)
+	}),
+)
 
 controller.signal.addEventListener("abort", () => daemon.close())
 
