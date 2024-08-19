@@ -41,6 +41,7 @@ export class Daemon {
 			lastMessages: number
 			newMessages: number
 			lastActive: number
+			peers: any[]
 			lastActiveTimer: ReturnType<typeof setInterval>
 		}
 	>()
@@ -174,6 +175,7 @@ export class Daemon {
 				port,
 				app,
 				api,
+				peers: [] as any[],
 				lastActive: Date.now(),
 				lastClock: (await app.messageLog.getClock())[0],
 				lastMessages: await app.messageLog.db.count("$messages"),
@@ -186,6 +188,7 @@ export class Daemon {
 					const messageCount = await app.messageLog.db.count("$messages")
 					const [clock] = await app.messageLog.getClock()
 
+					status.peers = app.libp2p.getPeers()
 					status.newMessages = messageCount - status.lastMessages
 					status.lastMessages = messageCount
 					status.lastClock = clock
@@ -287,9 +290,10 @@ export class Daemon {
 
 		const apps = Array.from(this.apps.entries())
 		apps.sort(([topicA], [topicB]) => topicA.localeCompare(topicB))
-		for (const [topic, { app, lastActive, lastMessages, lastClock, newMessages }] of apps) {
+		for (const [topic, { app, lastActive, lastMessages, lastClock, newMessages, peers }] of apps) {
 			const currentTime = Date.now()
-			console.log(`${app.topic}: ${lastMessages} msgs, ${newMessages} msgs/sec [${lastClock} clock]`)
+			const online = peers.length > 0 ? "🟢" : "🔴"
+			console.log(`${online} ${app.topic}: ${lastMessages} msgs, ${newMessages} msgs/sec [${lastClock} clock]`)
 			if (currentTime - lastActive > this.sleepTimeout) {
 				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
 				this.stop(app.topic)
