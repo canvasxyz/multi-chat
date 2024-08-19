@@ -26,6 +26,7 @@ if (!fs.existsSync(path.resolve(CANVAS_HOME))) {
 export class Daemon {
 	private sleepTimer: ReturnType<typeof setInterval>
 	private sleepTimeout: number
+	private elapsed: number
 
 	public readonly api = express()
 	public readonly server: http.Server & stoppable.WithStop
@@ -123,6 +124,7 @@ export class Daemon {
 			this.checkSleepTimeouts()
 		}, 1000)
 		this.sleepTimeout = config.sleepTimeout
+		this.elapsed = 0
 
 		this.bannedTopics = config.bannedTopics ?? []
 	}
@@ -276,17 +278,22 @@ export class Daemon {
 	}
 
 	private checkSleepTimeouts() {
+		this.elapsed += 1
+		console.log(`${this.elapsed} seconds elapsed`)
+
 		if (!this.sleepTimeout || this.apps.size === 0) {
 			return
 		}
-		console.log("---")
-		this.apps.forEach(({ app, lastActive, lastMessages, lastClock, newMessages }) => {
+
+		const apps = Array.from(this.apps.entries())
+		apps.sort(([topicA], [topicB]) => topicA.localeCompare(topicB))
+		for (const [topic, { app, lastActive, lastMessages, lastClock, newMessages }] of apps) {
 			const currentTime = Date.now()
-			console.log(`${app.topic}: ${lastMessages} msgs, +${newMessages} msgs/sec [${lastClock} clock]`)
+			console.log(`${app.topic}: ${lastMessages} msgs, ${newMessages} msgs/sec [${lastClock} clock]`)
 			if (currentTime - lastActive > this.sleepTimeout) {
 				console.log(`[multi-chat-server] Stopping ${app.topic} due to inactivity`)
 				this.stop(app.topic)
 			}
-		})
+		}
 	}
 }
