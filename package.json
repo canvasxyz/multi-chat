@@ -7,9 +7,9 @@
 		"clean": "npm run clean -w @canvas-js/multi-chat-load-test -w @canvas-js/multi-chat-client -w @canvas-js/multi-chat-server",
 		"dev": "tsc --build --watch",
 		"server:start": "node server/lib/index.js",
-    "client:dev": "cd client && vite dev",
-    "client:build": "cd client && vite build",
-    "client:preview": "cd client && vite preview"
+		"client:dev": "cd client && vite dev",
+		"client:build": "cd client && vite build",
+		"client:preview": "cd client && vite preview"
 	},
 	"workspaces": [
 		"./client",

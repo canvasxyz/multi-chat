@@ -39,9 +39,14 @@ const daemon = new Daemon(
 	},
 )
 
+const topics: string[] = []
+const numTopics = NUM_TOPICS ? parseInt(NUM_TOPICS, 10) : 10
+for (let i = 0; i < numTopics; i++) {
+	topics.push(`room-${i}.canvas.xyz`)
+}
+
 await Promise.all(
-	Array.from(Array(NUM_TOPICS ? parseInt(NUM_TOPICS, 10) : 10).keys()).map(async (i) => {
-		const topic = `room-${i}.canvas.xyz`
+	topics.map(async (topic) => {
 		const app = await daemon.start(topic)
 		console.log(`initializing ${topic}`)
 		for (let i = 0; i < 200; i++) {

@@ -1,7 +1,8 @@
 import fs from "node:fs"
-import process from "process"
-import puppeteer from "puppeteer"
+import crypto from "node:crypto"
+import process from "node:process"
 
+import puppeteer from "puppeteer"
 import { Canvas } from "@canvas-js/core"
 
 type Config = {
@@ -140,7 +141,13 @@ const setupPage = async (page: puppeteer.Page, bundle: string, topic: string, up
 	})
 
 	page.on("console", (msg) => {
-		console.log(`[${topic}] ${msg.text()}`)
+		console.log(
+			`[${topic} ${msg.type()}] ${msg.text()}`,
+			// ...msg.args().map((arg) => arg.toString()),
+		)
+		if (msg.type() === "error") {
+			console.error(`[${topic} error]`, ...msg.args().map((arg) => arg.jsonValue()))
+		}
 	})
 
 	try {
@@ -175,9 +182,10 @@ const runner = async () => {
 	console.log(`starting load test with ${numTopics} clients`)
 	console.log(`cycling up ${cycleUp} sec, down ${cycleDown} sec`)
 
-	const bundle = fs.readFileSync("./lib/bundle-compiled.js", { encoding: "utf8" })
+	const bundle = fs.readFileSync("./dist/bundle.js", { encoding: "utf8" })
 	const browser = await puppeteer.launch({
 		dumpio: true,
+		userDataDir: `data/${crypto.pseudoRandomBytes(8).toString("hex")}`,
 		headless: true,
 		args: [
 			"--no-sandbox",
