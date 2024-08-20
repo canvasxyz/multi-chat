@@ -8,7 +8,7 @@
 		"start": "node lib/runner.js"
 	},
 	"dependencies": {
-		"@canvas-js/core": "^0.10.6",
+		"@canvas-js/core": "^0.10.7",
 		"@multiformats/multiaddr": "^12.3.0",
 		"puppeteer": "^22.11.2",
 		"weald": "^1.0.2"
